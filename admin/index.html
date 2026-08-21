@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Westime Thailand | Warranty Admin</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      background: #f3f6fa;
+      color: #172033;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 620px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: #fff;
+    }
+
+    .header {
+      background: #102f57;
+      color: #fff;
+      padding: 28px 24px;
+    }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      opacity: .85;
+    }
+
+    .header h1 {
+      margin: 9px 0 6px;
+      font-size: 26px;
+    }
+
+    .header p {
+      margin: 0;
+      color: #d9e4f2;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .container {
+      padding: 22px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e3e8ef;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(15, 35, 67, .06);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin: 14px 0 7px;
+      font-size: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccd6e2;
+      border-radius: 11px;
+      font-size: 15px;
+      background: white;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #315d91;
+      box-shadow: 0 0 0 3px rgba(49, 93, 145, .10);
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 11px;
+      padding: 14px;
+      margin-top: 17px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #102f57;
+      color: white;
+    }
+
+    .danger {
+      background: #fff1f0;
+      color: #b42318;
+      border: 1px solid #ffd2cf;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 12px;
+      line-height: 1.6;
+      font-size: 14px;
+      display: none;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .success {
+      background: #edf9f2;
+      color: #157347;
+    }
+
+    .error {
+      background: #fff1f0;
+      color: #b42318;
+    }
+
+    .info {
+      background: #eef5ff;
+      color: #245184;
+    }
+
+    .userbar {
+      padding: 12px 14px;
+      background: #f7f9fc;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #566274;
+      line-height: 1.5;
+    }
+
+    .result {
+      margin-top: 15px;
+      border: 1px solid #dce4ed;
+      border-radius: 12px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      padding: 11px 13px;
+      border-bottom: 1px solid #e7ebf0;
+      font-size: 14px;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .key {
+      color: #758295;
+    }
+
+    .value {
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .small {
+      color: #778395;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 12px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 5px 20px 30px;
+      font-size: 12px;
+      color: #7c8796;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="header">
+    <div class="brand">WESTIME THAILAND</div>
+    <h1>Warranty Admin</h1>
+    <p>ระบบหลังบ้านสำหรับเปิดใช้งานการรับประกันสินค้า</p>
+  </div>
+
+  <div class="container">
+
+    <!-- LOGIN -->
+    <div id="loginCard" class="card">
+
+      <h2>เข้าสู่ระบบ Admin</h2>
+
+      <label>อีเมล</label>
+      <input
+        id="email"
+        type="email"
+        placeholder="admin@email.com"
+        autocomplete="username"
+      >
+
+      <label>รหัสผ่าน</label>
+      <input
+        id="password"
+        type="password"
+        placeholder="รหัสผ่าน"
+        autocomplete="current-password"
+      >
+
+      <button
+        class="primary"
+        onclick="login()"
+      >
+        เข้าสู่ระบบ
+      </button>
+
+      <div
+        id="loginMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+
+    <!-- ADMIN -->
+    <div
+      id="adminCard"
+      class="card hidden"
+    >
+
+      <h2>Activate Warranty</h2>
+
+      <div
+        id="userInfo"
+        class="userbar"
+      ></div>
+
+
+      <label>Warranty ID *</label>
+
+      <input
+        id="warrantyId"
+        placeholder="เช่น WTH-26-XXXXXXXX"
+        autocomplete="off"
+      >
+
+
+      <label>Order ID *</label>
+
+      <input
+        id="orderId"
+        placeholder="TikTok Order ID"
+        autocomplete="off"
+      >
+
+
+      <label>รุ่นสินค้า</label>
+
+      <input
+        id="model"
+        placeholder="เช่น 38-6673"
+        autocomplete="off"
+      >
+
+
+      <label>สี</label>
+
+      <input
+        id="color"
+        placeholder="เช่น แดง/น้ำเงิน"
+        autocomplete="off"
+      >
+
+
+      <label>ช่องทางจำหน่าย</label>
+
+      <select id="salesChannel">
+        <option value="TikTok Shop">TikTok Shop</option>
+        <option value="TikTok Live">TikTok Live</option>
+        <option value="อื่น ๆ">อื่น ๆ</option>
+      </select>
+
+
+      <label>วันที่ซื้อ *</label>
+
+      <input
+        id="purchaseDate"
+        type="date"
+      >
+
+
+      <button
+        id="activateBtn"
+        class="primary"
+        onclick="activateWarranty()"
+      >
+        Activate Warranty
+      </button>
+
+
+      <div
+        id="adminMessage"
+        class="message"
+      ></div>
+
+
+      <div
+        id="result"
+        class="result"
+      ></div>
+
+
+      <button
+        class="danger"
+        onclick="logout()"
+      >
+        ออกจากระบบ
+      </button>
+
+      <div class="small">
+        การ Activate จะผูก Warranty ID กับ Order ID และเริ่มระยะเวลารับประกัน 1 ปีจากวันที่ซื้อ
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer>
+    Westime Thailand Warranty Management System
+  </footer>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+  "https://nfgkraprscchovvwoyaw.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_14eF0zO-NXMFSg2XwjoiAw_7UVRjzJy";
+
+const client =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+const loginCard =
+  document.getElementById("loginCard");
+
+const adminCard =
+  document.getElementById("adminCard");
+
+const loginMessage =
+  document.getElementById("loginMessage");
+
+const adminMessage =
+  document.getElementById("adminMessage");
+
+const result =
+  document.getElementById("result");
+
+
+function showMessage(
+  element,
+  text,
+  type
+) {
+
+  element.className =
+    "message show " + type;
+
+  element.innerText = text;
+
+}
+
+
+function hideMessage(element) {
+
+  element.className = "message";
+
+  element.innerText = "";
+
+}
+
+
+function formatDate(date) {
+
+  if (!date) return "-";
+
+  const d =
+    new Date(
+      date + "T00:00:00"
+    );
+
+  return d.toLocaleDateString(
+    "th-TH",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }
+  );
+
+}
+
+
+function setToday() {
+
+  const now = new Date();
+
+  const local =
+    new Date(
+      now.getTime() -
+      now.getTimezoneOffset() * 60000
+    );
+
+  document
+    .getElementById("purchaseDate")
+    .value =
+      local
+      .toISOString()
+      .slice(0, 10);
+
+}
+
+
+async function login() {
+
+  hideMessage(loginMessage);
+
+  const email =
+    document
+    .getElementById("email")
+    .value
+    .trim();
+
+  const password =
+    document
+    .getElementById("password")
+    .value;
+
+
+  if (!email || !password) {
+
+    showMessage(
+      loginMessage,
+      "กรุณากรอกอีเมลและรหัสผ่าน",
+      "error"
+    );
+
+    return;
+  }
+
+
+  showMessage(
+    loginMessage,
+    "กำลังเข้าสู่ระบบ...",
+    "info"
+  );
+
+
+  const {
+    data,
+    error
+  } =
+    await client.auth
+    .signInWithPassword({
+      email,
+      password
+    });
+
+
+  if (error) {
+
+    showMessage(
+      loginMessage,
+      "เข้าสู่ระบบไม่สำเร็จ: " +
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  hideMessage(loginMessage);
+
+  showAdmin(
+    data.user
+  );
+
+}
+
+
+async function logout() {
+
+  await client.auth.signOut();
+
+  adminCard.classList.add(
+    "hidden"
+  );
+
+  loginCard.classList.remove(
+    "hidden"
+  );
+
+  document
+    .getElementById("password")
+    .value = "";
+
+}
+
+
+function showAdmin(user) {
+
+  loginCard.classList.add(
+    "hidden"
+  );
+
+  adminCard.classList.remove(
+    "hidden"
+  );
+
+  document
+    .getElementById("userInfo")
+    .innerHTML =
+      "เข้าสู่ระบบแล้ว<br><strong>" +
+      user.email +
+      "</strong>";
+
+}
+
+
+function errorText(message) {
+
+  if (
+    message.includes(
+      "UNAUTHORIZED_ADMIN"
+    )
+  ) {
+    return "บัญชีนี้ไม่มีสิทธิ์ใช้งานระบบ Admin";
+  }
+
+
+  if (
+    message.includes(
+      "WARRANTY_NOT_FOUND"
+    )
+  ) {
+    return "ไม่พบ Warranty ID นี้ในระบบ";
+  }
+
+
+  if (
+    message.includes(
+      "WARRANTY_NOT_UNUSED"
+    )
+  ) {
+    return "Warranty ID นี้ถูกใช้งานหรือ Activate ไปแล้ว";
+  }
+
+
+  if (
+    message.includes(
+      "ORDER_ID_REQUIRED"
+    )
+  ) {
+    return "กรุณากรอก Order ID";
+  }
+
+
+  if (
+    message.includes(
+      "PURCHASE_DATE_REQUIRED"
+    )
+  ) {
+    return "กรุณาระบุวันที่ซื้อ";
+  }
+
+
+  return message;
+
+}
+
+
+async function activateWarranty() {
+
+  hideMessage(adminMessage);
+
+  result.className =
+    "result";
+
+  result.innerHTML = "";
+
+
+  const warrantyId =
+    document
+    .getElementById("warrantyId")
+    .value
+    .trim()
+    .toUpperCase();
+
+
+  const orderId =
+    document
+    .getElementById("orderId")
+    .value
+    .trim();
+
+
+  const model =
+    document
+    .getElementById("model")
+    .value
+    .trim();
+
+
+  const color =
+    document
+    .getElementById("color")
+    .value
+    .trim();
+
+
+  const salesChannel =
+    document
+    .getElementById("salesChannel")
+    .value;
+
+
+  const purchaseDate =
+    document
+    .getElementById("purchaseDate")
+    .value;
+
+
+  if (
+    !warrantyId ||
+    !orderId ||
+    !purchaseDate
+  ) {
+
+    showMessage(
+      adminMessage,
+      "กรุณากรอก Warranty ID, Order ID และวันที่ซื้อ",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      "activateBtn"
+    );
+
+
+  button.disabled = true;
+
+  button.innerText =
+    "กำลัง Activate...";
+
+
+  const {
+    data: sessionData
+  } =
+    await client.auth
+    .getSession();
+
+
+  if (
+    !sessionData.session
+  ) {
+
+    showMessage(
+      adminMessage,
+      "Session หมดอายุ กรุณาเข้าสู่ระบบใหม่",
+      "error"
+    );
+
+    button.disabled = false;
+
+    button.innerText =
+      "Activate Warranty";
+
+    return;
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await client.rpc(
+      "activate_warranty_admin",
+      {
+
+        p_warranty_id:
+          warrantyId,
+
+        p_order_id:
+          orderId,
+
+        p_model:
+          model,
+
+        p_color:
+          color,
+
+        p_sales_channel:
+          salesChannel,
+
+        p_purchase_date:
+          purchaseDate,
+
+        p_actor_email:
+          sessionData
+          .session
+          .user
+          .email
+
+      }
+    );
+
+
+  button.disabled = false;
+
+  button.innerText =
+    "Activate Warranty";
+
+
+  if (error) {
+
+    showMessage(
+      adminMessage,
+      errorText(
+        error.message
+      ),
+      "error"
+    );
+
+    return;
+  }
+
+
+  const unit =
+    Array.isArray(data)
+      ? data[0]
+      : data;
+
+
+  showMessage(
+    adminMessage,
+    "✓ Activate Warranty สำเร็จ",
+    "success"
+  );
+
+
+  result.className =
+    "result show";
+
+
+  result.innerHTML = `
+
+    <div class="row">
+      <div class="key">
+        Warranty ID
+      </div>
+
+      <div class="value">
+        ${unit.warranty_id || "-"}
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="key">
+        Order ID
+      </div>
+
+      <div class="value">
+        ${unit.order_id || "-"}
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="key">
+        รุ่น
+      </div>
+
+      <div class="value">
+        ${unit.model || "-"}
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="key">
+        สี
+      </div>
+
+      <div class="value">
+        ${unit.color || "-"}
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="key">
+        วันที่ซื้อ
+      </div>
+
+      <div class="value">
+        ${formatDate(
+          unit.purchase_date
+        )}
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="key">
+        รับประกันถึง
+      </div>
+
+      <div class="value">
+        ${formatDate(
+          unit.warranty_expires_on
+        )}
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="key">
+        สถานะ
+      </div>
+
+      <div class="value">
+        ${unit.status || "-"}
+      </div>
+    </div>
+
+  `;
+
+
+  document
+    .getElementById("warrantyId")
+    .value = "";
+
+  document
+    .getElementById("orderId")
+    .value = "";
+
+  document
+    .getElementById("model")
+    .value = "";
+
+  document
+    .getElementById("color")
+    .value = "";
+
+}
+
+
+async function initialize() {
+
+  setToday();
+
+
+  const {
+    data
+  } =
+    await client.auth
+    .getSession();
+
+
+  if (
+    data.session &&
+    data.session.user
+  ) {
+
+    showAdmin(
+      data.session.user
+    );
+
+  }
+
+}
+
+
+initialize();
+
+</script>
+
+</body>
+</html>
