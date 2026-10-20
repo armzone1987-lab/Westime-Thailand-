@@ -40,7 +40,7 @@ footer{text-align:center;color:#8090a1;font-size:12px;margin:30px 0}
 <button class="wide" id="loginBtn" type="submit">เข้าสู่ระบบ</button></form>
 </section>
 <div id="workArea" hidden>
-<section class="panel"><div class="row"><div class="grow"><h2>1. เลือกไฟล์ CSV จาก TikTok Shop</h2><p class="subtext">อ่านไฟล์ภายในอุปกรณ์ของคุณก่อนบันทึก ระบบเลือกเฉพาะออเดอร์ที่จะจัดส่ง/รอเข้ารับ และไม่นำเข้าข้อมูลส่วนตัวลูกค้าจาก CSV</p></div><button class="secondary" id="logoutBtn" type="button">ออกจากระบบ</button></div>
+<section class="panel"><div class="row"><div class="grow"><h2>1. เลือกไฟล์ CSV จาก TikTok Shop</h2><p class="subtext">อ่านไฟล์ภายในอุปกรณ์ของคุณก่อนบันทึก รองรับคำสั่งซื้อปัจจุบันและย้อนหลัง ทั้งรอจัดส่ง อยู่ระหว่างขนส่ง และจัดส่งสำเร็จ โดยข้ามออเดอร์ยกเลิก/คืนสินค้า/คืนเงิน และไม่นำเข้าข้อมูลส่วนตัวลูกค้าจาก CSV</p></div><button class="secondary" id="logoutBtn" type="button">ออกจากระบบ</button></div>
 <label for="csvInput">TikTok Orders CSV</label><input type="file" id="csvInput" accept=".csv,text/csv">
 <p class="small muted">คอลัมน์หลัก: Order ID, Order Status, Seller SKU, Variation, Quantity, Created Time · ใช้ Paid Time หากมี · ไฟล์ต้องเป็น UTF-8</p>
 <div class="banner">ข้อมูลที่จะบันทึก: Order ID, วันซื้อ, SKU, รุ่น, สี, จำนวน, Tracking, สถานะ และชื่อแบรนด์เท่าที่ระบุได้จากข้อมูลสินค้า — <strong>ไม่มีการสร้างหรือพิมพ์ Warranty QR</strong></div>
@@ -50,7 +50,7 @@ footer{text-align:center;color:#8090a1;font-size:12px;margin:30px 0}
 <p id="fileLabel" class="subtext"></p>
 <div class="stats"><div class="stat"><strong id="orderCount">0</strong><small>คำสั่งซื้อ</small></div><div class="stat"><strong id="unitCount">0</strong><small>นาฬิกา</small></div><div class="stat"><strong id="skuCount">0</strong><small>SKU/สี</small></div><div class="stat"><strong id="skipCount">0</strong><small>แถวที่ข้าม</small></div></div>
 <div class="sheet"><table><thead><tr><th>Seller SKU</th><th>รุ่น</th><th>สี</th><th>จำนวน</th></tr></thead><tbody id="itemsBody"></tbody></table></div>
-<p class="hint">การนำเข้าไฟล์เดิมซ้ำจะอัปเดตข้อมูลคำสั่งซื้อและจำนวนสินค้าเดิม ไม่ใช่สร้างรายการใหม่ซ้ำโดยอัตโนมัติ กรุณาตรวจสอบจำนวนให้ถูกต้องก่อนบันทึก และตรวจสอบรายการยกเลิก/คืนเงินต่างหาก</p>
+<p class="hint">การนำเข้าไฟล์เดิมซ้ำจะอัปเดตข้อมูลคำสั่งซื้อและจำนวนสินค้าเดิม ไม่ใช่สร้างรายการใหม่ซ้ำโดยอัตโนมัติ ระบบไม่เพิ่มรายการยกเลิก/คืนสินค้า/คืนเงิน และจะแบ่งบันทึกอัตโนมัติครั้งละไม่เกิน 150 ออเดอร์ กรุณาตรวจสอบยอดก่อนยืนยัน</p>
 <label class="check"><input type="checkbox" id="confirm"><span>ข้าพเจ้าตรวจสอบรายการที่จะแพ็ก รุ่น SKU สี และจำนวนแล้ว ยืนยันให้นำข้อมูลเข้าสู่ระบบรับประกัน</span></label>
 <button id="saveBtn" type="button" class="wide" disabled>บันทึก CSV เข้าระบบรับประกัน (ไม่สร้าง QR)</button>
 </section>
@@ -342,7 +342,8 @@ const SUPABASE_URL="https://nfgkraprscchovvwoyaw.supabase.co";
 const SUPABASE_KEY="sb_publishable_14eF0zO-NXMFSg2XwjoiAw_7UVRjzJy";
 const client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-let job=null,busy=false,saved=false;
+let job=null,busy=false,saved=false,completedChunks=0,importTotals={orders:0,items:0,units:0};
+const IMPORT_CHUNK_SIZE=150;
 function clean(value) {
   return String(value == null ? "" : value).replace(/^\uFEFF/, "").trim();
 }
@@ -382,10 +383,26 @@ function normalizeDate(value) {
 }
 
 function isEligibleStatus(orderStatus, orderSubstatus) {
-  return WestimeCsvCore.isReadyOrder({
-    orderStatus: orderStatus,
-    orderSubstatus: orderSubstatus
-  });
+  const status=clean(orderStatus).toLowerCase();
+  const substatus=clean(orderSubstatus).toLowerCase();
+  const combined=status+" "+substatus;
+  if (/(ยกเลิก|คืนสินค้า|คืนเงิน|cancel|return|refund|rejected|failed delivery)/i.test(combined)) return false;
+  // TikTok Shop exports use 'จัดส่งแล้ว' for both in-transit and delivered orders.
+  return /(ที่จะจัดส่ง|รอเข้ารับ|รอจัดส่ง|จัดส่งแล้ว|จัดส่งสำเร็จ|อยู่ระหว่างขนส่ง|to ship|ready to ship|awaiting collection|shipped|in transit|in_transit|delivered|completed)/i.test(combined);
+}
+function hasCancellationOrReturn(row,map) {
+  const cancellation=readCell(row,map,"Cancelation/Return Type");
+  const cancellationStatus=readCell(row,map,"Cancel Reason");
+  const cancelledTime=readCell(row,map,"Cancelled Time");
+  const returned=readCell(row,map,"Sku Quantity of return");
+  const refund=readCell(row,map,"Order Refund Amount");
+  const numericNonzero=value=>{
+    if(!value)return false;
+    const cleaned=value.replace(/[฿,\s]/g,"");
+    const amount=Number(cleaned);
+    return !Number.isFinite(amount)||amount!==0;
+  };
+  return Boolean(cancellation||cancellationStatus||cancelledTime||numericNonzero(returned)||numericNonzero(refund));
 }
 
 function addItem(order, source) {
@@ -417,6 +434,14 @@ function parseProductionCsv(text) {
   if (missing.length) throw new Error("CSV ขาดคอลัมน์: " + missing.join(", "));
 
   const ordersById = new Map();
+  const excludedOrderIds = new Set();
+  // An order with any reported cancellation, refund or return is held for manual review.
+  matrix.slice(1).forEach(function (row) {
+    if (hasCancellationOrReturn(row,map)) {
+      const orderId=readCell(row,map,"Order ID").toUpperCase();
+      if (orderId) excludedOrderIds.add(orderId);
+    }
+  });
   let skippedRows = 0;
 
   matrix.slice(1).forEach(function (row) {
@@ -428,7 +453,7 @@ function parseProductionCsv(text) {
     const quantity = Number.parseInt(readCell(row, map, "Quantity"), 10);
     const date = normalizeDate(readCell(row, map, "Paid Time") || readCell(row, map, "Created Time"));
 
-    if (!orderId || !sku || !Number.isFinite(quantity) || quantity < 1 ||
+    if (!orderId || excludedOrderIds.has(orderId) || !sku || !Number.isFinite(quantity) || quantity < 1 ||
         !date || !isEligibleStatus(orderStatus, orderSubstatus)) {
       skippedRows += 1;
       return;
@@ -474,7 +499,7 @@ function parseProductionCsv(text) {
     };
   });
 
-  if (!orders.length) throw new Error("ไม่พบออเดอร์สถานะที่จะจัดส่ง/รอเข้ารับใน CSV");
+  if (!orders.length) throw new Error("ไม่พบออเดอร์ที่นำเข้าได้ โปรดตรวจสอบสถานะคำสั่งซื้อและรายการยกเลิก/คืนสินค้า/คืนเงินใน CSV");
 
   const groupsByKey = new Map();
   orders.forEach(function (order) {
@@ -507,8 +532,8 @@ function parseProductionCsv(text) {
 
 
 function note(t,kind=""){const n=$("message");n.hidden=!t;n.textContent=t;n.className="note"+(kind?" "+kind:"")}
-function setView(auth){$("loginPanel").hidden=auth;$("workArea").hidden=!auth;if(!auth){job=null;saved=false;$("previewPanel").hidden=true;$("successPanel").hidden=true;$("csvInput").value="";$("userLabel").textContent=""}}
-function ready(){ $("saveBtn").disabled=busy||saved||!job||!$("confirm").checked; $("loginBtn").disabled=busy; }
+function setView(auth){$("loginPanel").hidden=auth;$("workArea").hidden=!auth;if(!auth){job=null;saved=false;completedChunks=0;importTotals={orders:0,items:0,units:0};$("previewPanel").hidden=true;$("successPanel").hidden=true;$("csvInput").value="";$("userLabel").textContent=""}}
+function ready(){ $("saveBtn").disabled=busy||saved||!job||!$("confirm").checked; $("loginBtn").disabled=busy; const total=job?Math.ceil(job.orders.length/IMPORT_CHUNK_SIZE):0; $("saveBtn").textContent=completedChunks>0&&!saved?`นำเข้าต่อ (เสร็จแล้ว ${completedChunks}/${total} ชุด)`:"บันทึก CSV เข้าระบบรับประกัน (ไม่สร้าง QR)"; }
 function showJob(){
  $("previewPanel").hidden=!job;$("successPanel").hidden=true;
  if(!job)return;
@@ -521,7 +546,7 @@ function showJob(){
  for(const group of job.groups){const tr=document.createElement("tr");for(const value of [group.sku,group.model,group.color,group.quantity]){const cell=document.createElement("td");cell.textContent=value;tr.appendChild(cell)}$("itemsBody").appendChild(tr)}
 }
 async function processFile(){
- const file=$("csvInput").files?.[0];job=null;saved=false;$("confirm").checked=false;$("previewPanel").hidden=true;$("successPanel").hidden=true;note("");
+ const file=$("csvInput").files?.[0];job=null;saved=false;completedChunks=0;importTotals={orders:0,items:0,units:0};$("confirm").checked=false;$("previewPanel").hidden=true;$("successPanel").hidden=true;note("");
  if(!file){ready();return}
  if(file.size>8*1024*1024){note("ไฟล์ใหญ่เกิน 8 MB กรุณาแบ่ง CSV เป็นไฟล์ย่อย","err");ready();return}
  busy=true;ready();note("กำลังตรวจสอบข้อมูล CSV…");
@@ -536,20 +561,33 @@ async function processFile(){
 }
 async function save(){
  if(!job||!$("confirm").checked||busy||saved)return;
- busy=true;ready();note("กำลังบันทึกคำสั่งซื้อ กรุณาอย่าปิดหน้านี้…");
+ busy=true;ready();
+ const totalChunks=Math.ceil(job.orders.length/IMPORT_CHUNK_SIZE);
  try{
  const {data:{session}}=await client.auth.getSession();
  if(!session?.user)throw new Error("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่");
- const {data,error}=await client.rpc("import_warranty_orders_admin_v5",{p_orders:job.orders,p_source_file:job.filename});
- if(error)throw error;
- if(!Array.isArray(data)||!data.length)throw new Error("ไม่ได้รับข้อมูลผลการนำเข้า กรุณาเช็กในฐานข้อมูลก่อนลองซ้ำ");
+ for(let n=completedChunks;n<totalChunks;n++){
+   const slice=job.orders.slice(n*IMPORT_CHUNK_SIZE,(n+1)*IMPORT_CHUNK_SIZE);
+   note("กำลังบันทึกชุด "+(n+1)+"/"+totalChunks+" ("+slice.length+" ออเดอร์) — กรุณาอย่าปิดหน้านี้");
+   const {data,error}=await client.rpc("import_warranty_orders_admin_v5",{p_orders:slice,p_source_file:job.filename});
+   if(error)throw error;
+   if(!Array.isArray(data)||!data.length)throw new Error("ไม่ได้รับผลการบันทึกชุดที่ "+(n+1)+" กรุณาตรวจสอบก่อนลองซ้ำ");
+   const result=data[0];
+   for(const [key,value] of [["orders","orders_saved"],["items","items_saved"],["units","units_saved"]]) {
+     const amount=Number(result[value]);
+     if(!Number.isFinite(amount)||amount<0)throw new Error("ผลการบันทึกไม่ครบถ้วนในชุด "+(n+1)+" กรุณาติดต่อผู้ดูแล");
+     importTotals[key]+=amount;
+   }
+   completedChunks=n+1;
+ }
  saved=true;$("previewPanel").hidden=true;$("successPanel").hidden=false;
- const counts=data[0];$("successSummary").textContent="บันทึก/อัปเดต "+counts.orders_saved+" คำสั่งซื้อ · "+counts.items_saved+" รายการสินค้า · "+counts.units_saved+" เรือน";
- note("บันทึกสำเร็จ ไม่ได้สร้าง Warranty QR","ok");
+ $("successSummary").textContent="บันทึก/อัปเดต "+importTotals.orders+" คำสั่งซื้อ · "+importTotals.items+" รายการสินค้า · "+importTotals.units+" เรือน (ทั้งหมด "+totalChunks+" ชุด)";
+ note("บันทึกข้อมูลย้อนหลัง/ปัจจุบันสำเร็จ ไม่ได้สร้าง Warranty QR","ok");
  }catch(e){
  const msg=String(e?.message||e);
  const friendly=msg.includes("UNAUTHORIZED_ADMIN")?"บัญชีนี้ไม่มีสิทธิ์นำเข้า CSV":msg.includes("ORDERS_TOO_MANY")?"นำเข้าต่อครั้งได้ไม่เกิน 1,000 ออเดอร์":msg.includes("ORDER_DATE_REQUIRED")?"บางคำสั่งซื้อไม่มีวันที่ซื้อ":msg.includes("ITEM_BRAND_INVALID")?"พบชื่อแบรนด์ไม่ถูกต้อง":msg.includes("Failed to fetch")?"ติดต่อ Supabase ไม่ได้ กรุณาตรวจอินเทอร์เน็ต":msg;
- note("ไม่สามารถบันทึกได้: "+friendly,"err")
+ const extra=completedChunks?("บันทึกแล้ว "+completedChunks+"/"+totalChunks+" ชุด กดปุ่มนำเข้าต่อเพื่อทำชุดที่เหลือได้ · "):"";
+ note("ไม่สามารถบันทึกได้: "+extra+friendly,"err");
  }finally{busy=false;ready()}
 }
 async function initialize(){
@@ -560,7 +598,7 @@ async function initialize(){
  $("csvInput").addEventListener("change",processFile);
  $("confirm").addEventListener("change",ready);
  $("saveBtn").addEventListener("click",save);
- $("againBtn").addEventListener("click",()=>{job=null;saved=false;$("csvInput").value="";$("confirm").checked=false;$("previewPanel").hidden=true;$("successPanel").hidden=true;note("");ready()});
+ $("againBtn").addEventListener("click",()=>{job=null;saved=false;completedChunks=0;importTotals={orders:0,items:0,units:0};$("csvInput").value="";$("confirm").checked=false;$("previewPanel").hidden=true;$("successPanel").hidden=true;note("");ready()});
  $("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();setView(false);note("ออกจากระบบเรียบร้อยแล้ว")});
  ready();
 }
