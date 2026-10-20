@@ -87,6 +87,25 @@ main{padding-top:25px;max-width:1200px}
 .aside .detail-panel{background:#f2f6fc;border-radius:11px;padding:13px 15px;color:#526582;font-size:13px;line-height:1.9}
 .aside .detail-panel.caution{background:#fff4f4;color:#80525b}
 .side-note{background:#fff;border:1px solid #e1e8f0;border-radius:16px;padding:17px 18px;color:#5d6f8a;font-size:13px;margin-top:13px}
+
+/* Longitude Limited authorization information — public summary, not a copy of the letter */
+.auth-card{background:#fff;border:1px solid #dbe4f0;border-radius:17px;padding:21px 21px 18px;margin-bottom:18px;box-shadow:0 7px 25px rgba(12,44,79,.065)}
+.auth-card-head{display:flex;gap:11px;align-items:start}
+.auth-card-icon{flex:0 0 34px;height:34px;width:34px;display:grid;place-items:center;border-radius:11px;background:#eaf1fa;color:#174472;font-size:20px;line-height:1}
+.auth-card-kicker{margin:0 0 3px;color:#687b95;font-size:11px;font-weight:750;letter-spacing:.04em}
+.auth-card h2{font-size:18px;line-height:1.38;margin:0;color:#12355f}
+.auth-card .auth-company{color:#153a68;font-weight:850;letter-spacing:.01em;margin:16px 0 7px;font-size:13px}
+.auth-card .auth-description{font-size:12.5px;line-height:1.75;color:#526882;margin:0 0 14px}
+.auth-details{margin:0 0 14px;padding:11px 13px;border-radius:11px;background:#f6f8fc}
+.auth-details div{display:flex;align-items:baseline;justify-content:space-between;gap:9px;padding:5px 0}
+.auth-details div+div{border-top:1px solid #e6ecf4}
+.auth-details dt{font-size:11.5px;color:#6b7b91;flex:1}
+.auth-details dd{font-size:12px;font-weight:730;color:#18375c;text-align:right;margin:0;max-width:57%}
+.auth-link{display:inline-flex;align-items:center;gap:6px;padding:10px 12px;border-radius:9px;background:#edf3fa;color:#153f6c;text-decoration:none;font-size:12px;font-weight:750;border:1px solid #dbe5f1}
+.auth-link:hover{background:#e1ecfa}
+.auth-card .auth-disclaimer{font-size:11px;color:#7a899d;line-height:1.55;margin:11px 0 0}
+@media(max-width:440px){.auth-card{padding:18px 17px}.auth-details dd{max-width:54%}}
+
 footer{border-top:1px solid #e4eaf3;padding-top:22px;margin-top:32px}
 @media(max-width:900px){.brand-hero{grid-template-columns:minmax(0,1fr) minmax(0,.9fr)}.hero-copy{padding:24px 0 24px 22px}.hero-copy h1{font-size:30px}.hero-photo-wrap{height:290px}.step{font-size:11px;padding:8px 9px}}
 @media(max-width:790px){.site-nav-inner{padding:8px 15px}.brand-identity img{width:65px;height:52px}.brand-label{font-size:12px}main{padding:15px 14px 48px}.brand-hero{grid-template-columns:1fr;gap:0}.hero-copy{padding:24px 23px}.hero-photo-wrap{height:260px}.hero-photo{object-position:50% 42%;transform:scale(1.12)}.layout{grid-template-columns:1fr}.section{padding:22px}.steps{gap:7px}#self-lookup{width:100%;flex:1 1 auto}}
@@ -144,6 +163,22 @@ footer{border-top:1px solid #e4eaf3;padding-top:22px;margin-top:32px}
 </div>
 <div>
 <div class="promo"><div class="graphic"><img class="brandmark" src="/assets/fila-watches-logo.webp" alt="FILA Watches" width="100" height="100" loading="lazy"><small>FILA WATCH COLLECTION</small></div><div class="caption"><strong>FILA Watches</strong><small>รับประกันสินค้าและบริการหลังการขายโดย Westime Thailand</small></div></div>
+<section class="auth-card" aria-labelledby="longitude-title">
+  <div class="auth-card-head"><span class="auth-card-icon" aria-hidden="true">ⓘ</span><div>
+    <p class="auth-card-kicker">ข้อมูลหนังสืออนุญาต • ประเทศไทย</p>
+    <h2 id="longitude-title">การอนุญาตจาก Longitude Limited</h2>
+  </div></div>
+  <p class="auth-company">WESTIME (THAILAND) CO., LTD.</p>
+  <p class="auth-description">บริษัทได้รับหนังสืออนุญาตจาก <strong>Longitude Limited</strong> ให้นำเข้า ทำการตลาด และจำหน่ายนาฬิกา <strong>FILA</strong> ที่ผลิตและจำหน่ายโดย Longitude <strong>เฉพาะในประเทศไทย</strong> ตามขอบเขตที่ระบุในหนังสืออนุญาต</p>
+  <dl class="auth-details">
+    <div><dt>ผู้ออกหนังสืออนุญาต</dt><dd>Longitude Limited</dd></div>
+    <div><dt>วันที่ออกหนังสือ</dt><dd><time datetime="2026-03-13">13 มี.ค. 2569</time></dd></div>
+    <div><dt>มีผลถึงวันที่</dt><dd><time datetime="2026-12-31">31 ธ.ค. 2569</time></dd></div>
+    <div><dt>ผู้ดูแลการรับประกัน</dt><dd>Westime Thailand</dd></div>
+  </dl>
+  <a class="auth-link" href="https://filatime.com/" target="_blank" rel="noopener noreferrer" aria-label="เปิดเว็บไซต์ FILA Watches ในแท็บใหม่">เว็บไซต์ FILA Watches ↗</a>
+  <p class="auth-disclaimer">ลิงก์นี้เป็นเว็บไซต์ข้อมูลนาฬิกา FILA ไม่ใช่หน้าตรวจสอบรายชื่อผู้ได้รับอนุญาต หนังสืออนุญาตฉบับเต็มไม่ได้เผยแพร่บนหน้านี้</p>
+</section>
 <div class="aside"><strong>ดูแลโดย Westime Thailand</strong><h2>รับประกัน 1 ปี</h2><p>นับจากวันที่สั่งซื้อ</p><hr>
 <h3>ความคุ้มครอง</h3><div class="detail-panel">✓ กลไกและการทำงานของนาฬิกา<br>✓ ความผิดพลาดจากการผลิต<br>✓ แบตเตอรี่ ภายใต้เงื่อนไขการรับประกัน</div><hr>
 <h3 class="exclusions">สิ่งที่ไม่ครอบคลุม</h3><div class="detail-panel caution">× กระจกแตก<br>× สายสึกหรอตามการใช้งาน<br>× น้ำเข้าจากการใช้งานไม่ถูกต้อง<br>× ความเสียหายจากอุบัติเหตุ</div></div>
