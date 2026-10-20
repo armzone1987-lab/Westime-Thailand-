@@ -39,14 +39,77 @@ button:disabled{cursor:wait;opacity:.65}
 footer{text-align:center;color:#8290a2;font-size:12px;margin-top:28px}
 @media(max-width:790px){main{padding:22px 14px}.layout{grid-template-columns:1fr}.section{padding:21px}.aside{padding:21px}}
 @media(max-width:430px){.step{padding:8px;font-size:11px}.item{align-items:stretch;flex-direction:column}.item select{width:100%}.promo .graphic{height:132px}.promo .fila{font-size:46px}}
+
+/* FILA Watches registration visual refresh — no change to Order ID business logic */
+:root{--navy:#0c2d59;--ink:#102c50;--muted:#61748e;--border:#dbe4f0;--soft:#f3f6fa}
+body{background:linear-gradient(160deg,#f4f8fd 0%,#f7f9fc 45%,#f2f5fa 100%);color:var(--ink)}
+.site-nav{background:#fff;border-bottom:1px solid #e1e9f3;box-shadow:0 3px 16px rgba(16,42,82,.025)}
+.site-nav-inner{max-width:1170px;min-height:76px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:9px 20px}
+.brand-identity{display:flex;align-items:center;gap:15px;min-width:0;text-decoration:none;color:#102d56}
+.brand-identity img{width:75px;height:58px;object-fit:contain}
+.brand-divider{height:34px;width:1px;background:#d7e0ea}
+.brand-label{font-size:13px;letter-spacing:.09em;font-weight:850;line-height:1.45}
+.nav-link{font-size:13px;text-decoration:none;border-radius:9px;background:#edf3fa;color:#153f6c;padding:9px 13px;font-weight:700}
+.nav-link:hover{background:#e3eefa}
+main{padding-top:25px;max-width:1200px}
+.brand-hero{display:grid;grid-template-columns:minmax(0,1.17fr) minmax(0,1fr);gap:20px;align-items:center;margin-bottom:26px;border:1px solid #dbe5f0;border-radius:24px;overflow:hidden;background:linear-gradient(105deg,#fff 0%,#f3f7fc 57%,#e8eef7 100%);box-shadow:0 14px 36px rgba(24,52,87,.07)}
+.hero-copy{padding:32px 0 30px 34px;min-width:0}
+.hero-copy .eyebrow{color:#8b6a2b;letter-spacing:.15em}
+.hero-copy h1{font-size:clamp(30px,3vw,42px);letter-spacing:-.025em;margin:9px 0 12px;line-height:1.24}
+.hero-copy .intro{font-size:14px;line-height:1.8;max-width:475px;margin-bottom:25px}
+.hero-photo-wrap{height:330px;position:relative;overflow:hidden;background:#e9eef7}
+.hero-photo-wrap::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(248,250,254,.32),transparent 25%)}
+.hero-photo{width:100%;height:100%;object-fit:cover;object-position:49% 47%;display:block}
+.hero-watch-name{position:absolute;bottom:18px;right:20px;background:rgba(255,255,255,.88);color:#183d69;border:1px solid rgba(255,255,255,.8);padding:8px 12px;border-radius:11px;font-size:11px;font-weight:750;z-index:1;letter-spacing:.04em}
+.steps{margin:8px 0 0;gap:8px}
+.step{border:0;border-radius:999px;padding:9px 13px;background:#e8eef7;color:#73849c;font-size:12px;white-space:nowrap}
+.step.active{box-shadow:0 3px 9px rgba(12,45,89,.16)}
+.layout{grid-template-columns:minmax(0,1.65fr) minmax(270px,1fr);gap:20px}
+.section{border-radius:17px;padding:26px 27px;box-shadow:0 8px 24px #1a30520c}
+.section.lookup{border-top:3px solid #133866}
+.section h2{font-size:20px}
+#self-lookup-form{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+#self-lookup-form label{width:100%;margin-bottom:-7px}
+#self-order-id{flex:1 1 300px;min-width:0}
+#self-lookup{flex:0 0 auto;width:auto;min-height:48px;margin:0;padding:12px 19px}
+#self-lookup:before{content:"⌕";font-size:20px;margin-right:8px;vertical-align:-1px}
+.item{background:#f8fafd;border:1px solid #e3eaf2;border-radius:12px;padding:16px 18px;margin-top:13px;gap:12px}
+.item select{border-radius:9px;background:#fff}
+.promo{box-shadow:0 7px 25px rgba(12,44,79,.07);border-radius:17px}
+.promo .graphic{height:auto;min-height:140px;background:linear-gradient(140deg,#fbfcff,#edf3fb);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px}
+.promo .brandmark{height:100px;width:100px;object-fit:contain;mix-blend-mode:multiply}
+.promo .graphic small{font-size:12px;font-weight:650;color:#526887;letter-spacing:.08em}
+.promo .caption{padding:17px 22px}
+.promo .caption strong{font-size:16px}
+.aside{border-radius:17px;box-shadow:0 7px 25px rgba(12,44,79,.065)}
+.aside h2{font-size:26px;margin:8px 0 3px}
+.aside h3{display:flex;align-items:center;gap:9px;color:#153760}
+.aside h3:before{content:"✓";font-weight:800;display:inline-grid;place-items:center;border-radius:50%;height:25px;width:25px;color:#fff;background:#173d73;font-size:14px}
+.aside .exclusions:before{content:"×";background:#b52b38}
+.aside .detail-panel{background:#f2f6fc;border-radius:11px;padding:13px 15px;color:#526582;font-size:13px;line-height:1.9}
+.aside .detail-panel.caution{background:#fff4f4;color:#80525b}
+.side-note{background:#fff;border:1px solid #e1e8f0;border-radius:16px;padding:17px 18px;color:#5d6f8a;font-size:13px;margin-top:13px}
+footer{border-top:1px solid #e4eaf3;padding-top:22px;margin-top:32px}
+@media(max-width:900px){.brand-hero{grid-template-columns:minmax(0,1fr) minmax(0,.9fr)}.hero-copy{padding:24px 0 24px 22px}.hero-copy h1{font-size:30px}.hero-photo-wrap{height:290px}.step{font-size:11px;padding:8px 9px}}
+@media(max-width:790px){.site-nav-inner{padding:8px 15px}.brand-identity img{width:65px;height:52px}.brand-label{font-size:12px}main{padding:15px 14px 48px}.brand-hero{grid-template-columns:1fr;gap:0}.hero-copy{padding:24px 23px}.hero-photo-wrap{height:260px}.layout{grid-template-columns:1fr}.section{padding:22px}.steps{gap:7px}#self-lookup{width:100%;flex:1 1 auto}}
+@media(max-width:440px){.hero-photo-wrap{height:204px}.hero-copy h1{font-size:29px}.hero-copy .intro{font-size:13px}.step{font-size:10.5px;padding:8px 9px}.site-nav-inner{min-height:70px}.nav-link{font-size:11px;padding:9px}.brand-label{font-size:11px}.brand-identity{gap:9px}.brand-divider{height:28px}.hero-copy{padding:21px 19px}}
+
 </style>
 </head>
 <body>
+<header class="site-nav"><div class="site-nav-inner">
+<a class="brand-identity" href="/" aria-label="Westime Thailand"><img src="/assets/fila-watches-logo.webp" alt="FILA Watches" width="100" height="100"><span class="brand-divider" aria-hidden="true"></span><span class="brand-label">WESTIME THAILAND<br><span style="font-size:11px;font-weight:500;letter-spacing:0;color:#70809c">บริการหลังการขาย</span></span></a>
+<a class="nav-link" href="/">ตรวจสอบประกัน ↗</a>
+</div></header>
 <main>
-<div class="eyebrow">— &nbsp; บริการหลังการขาย</div>
+<section class="brand-hero" aria-label="FILA Watches warranty registration">
+<div class="hero-copy"><div class="eyebrow">— &nbsp; บริการหลังการขาย</div>
 <h1>ลงทะเบียนรับประกัน</h1>
-<p class="intro">ใช้เลขคำสั่งซื้อ TikTok Shop เพื่อลงทะเบียนและดูข้อมูลรับประกันสินค้าที่ซื้อจาก Westime Thailand</p>
+<p class="intro">เพียงใช้เลขคำสั่งซื้อจาก TikTok Shop เพื่อดูข้อมูลสินค้าและลงทะเบียนรับประกันกับ Westime Thailand</p>
 <div class="steps" aria-label="ขั้นตอนการลงทะเบียน"><div id="step1" class="step active">1 ตรวจสอบคำสั่งซื้อ</div><div id="step2" class="step">2 ยืนยันข้อมูล</div><div id="step3" class="step">3 ลงทะเบียนสำเร็จ</div></div>
+</div>
+<div class="hero-photo-wrap"><img class="hero-photo" src="/assets/fila-watch-hero.webp" alt="นาฬิกา FILA Watches สีแดง ขาว และกรมท่า" width="400" height="267" fetchpriority="high"><span class="hero-watch-name">FILA WATCH COLLECTION</span></div>
+</section>
 <div class="layout">
 <div>
 <section class="section lookup">
@@ -82,11 +145,11 @@ footer{text-align:center;color:#8290a2;font-size:12px;margin-top:28px}
 </section>
 </div>
 <div>
-<div class="promo"><div class="graphic"><div class="fila">FILA</div><small>WATCH COLLECTION</small></div><div class="caption"><strong>FILA Watch</strong><small>บริการหลังการขายโดย Westime Thailand</small></div></div>
-<div class="aside"><strong>ดูแลโดย Westime Thailand</strong><h2 style="margin-top:15px">รับประกัน 1 ปี</h2><p>นับจากวันที่สั่งซื้อ</p><hr>
-<h3>ความคุ้มครอง</h3><p>กลไกและความผิดพลาดจากการผลิต รวมถึงแบตเตอรี่</p><hr>
-<h3>สิ่งที่ไม่ครอบคลุม</h3><p>กระจกแตก สายสึกหรอตามการใช้งาน น้ำเข้าจากการใช้งานไม่ถูกต้อง และความเสียหายจากอุบัติเหตุ</p></div>
-<p class="bottom"><strong>ต้องการความช่วยเหลือ?</strong><br>กลับไปที่แชท LINE ของ Westime Thailand แจ้งเลขคำสั่งซื้อเพื่อให้เจ้าหน้าที่ตรวจสอบได้ครับ</p>
+<div class="promo"><div class="graphic"><img class="brandmark" src="/assets/fila-watches-logo.webp" alt="FILA Watches" width="100" height="100" loading="lazy"><small>FILA WATCH COLLECTION</small></div><div class="caption"><strong>FILA Watches</strong><small>รับประกันสินค้าและบริการหลังการขายโดย Westime Thailand</small></div></div>
+<div class="aside"><strong>ดูแลโดย Westime Thailand</strong><h2>รับประกัน 1 ปี</h2><p>นับจากวันที่สั่งซื้อ</p><hr>
+<h3>ความคุ้มครอง</h3><div class="detail-panel">✓ กลไกและการทำงานของนาฬิกา<br>✓ ความผิดพลาดจากการผลิต<br>✓ แบตเตอรี่ ภายใต้เงื่อนไขการรับประกัน</div><hr>
+<h3 class="exclusions">สิ่งที่ไม่ครอบคลุม</h3><div class="detail-panel caution">× กระจกแตก<br>× สายสึกหรอตามการใช้งาน<br>× น้ำเข้าจากการใช้งานไม่ถูกต้อง<br>× ความเสียหายจากอุบัติเหตุ</div></div>
+<div class="side-note"><strong>ต้องการความช่วยเหลือ?</strong><br>ติดต่อแชท LINE ของ Westime Thailand และแจ้งเลขคำสั่งซื้อเพื่อให้เจ้าหน้าที่ตรวจสอบได้ครับ</div>
 </div>
 </div>
 <footer>Westime Thailand Warranty Registration · <a href="/">ตรวจสอบ Warranty ID</a></footer>
