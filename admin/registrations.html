@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ทะเบียนลูกค้ารับประกัน | Westime Thailand</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{color-scheme:light;--navy:#172c50;--ink:#162842;--muted:#667891;--line:#dce5f0;--bg:#f3f6fa;--blue:#24528a;--green:#14734d;--red:#9b3434}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px/1.5 system-ui,-apple-system,"Noto Sans Thai","Segoe UI",sans-serif;color:var(--ink)}
+header{background:var(--navy);color:white;padding:26px max(22px,calc((100vw - 1250px)/2))}
+header .brand{letter-spacing:.14em;font-size:12px;font-weight:750;color:#a9c0db}header h1{font-size:clamp(23px,3.4vw,32px);margin:6px 0}header p{margin:0;color:#d9e4ef;font-size:14px}
+main{max-width:1280px;margin:25px auto;padding:0 18px 50px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+a{color:#144c82;text-decoration:none;font-weight:650}a:hover{text-decoration:underline}header a{color:#d7e9fc}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 4px 20px #192b450c;padding:20px;margin-bottom:16px}
+h2{font-size:20px;margin:0 0 13px}h3{font-size:17px;margin:0 0 10px}.muted{color:var(--muted)}.small{font-size:12px}.hidden{display:none!important}
+input,select{width:100%;padding:12px 13px;border:1px solid #bdcadd;border-radius:10px;background:#fff;color:var(--ink);font:inherit;min-width:0}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:3px solid #a6c8fa;outline-offset:2px}
+label{font-size:13px;font-weight:650;display:block;margin:0 0 6px}
+button{border:0;border-radius:10px;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}.primary{background:var(--navy);color:white}.secondary{border:1px solid #cad7e8;background:#fff;color:var(--navy)}
+.login{max-width:460px;margin:45px auto}.login input{margin:6px 0 15px}.login button{width:100%}
+#notice{margin:0 0 16px;padding:14px 16px;border-radius:12px;background:#ecf4ff;color:#234b79;white-space:pre-wrap}
+#notice.error{background:#fff0ee;color:var(--red)}#notice.ok{background:#ecf8ef;color:var(--green)}
+.filters{display:grid;grid-template-columns:minmax(230px,2fr) minmax(160px,1fr) auto auto;gap:12px;align-items:end}
+.summary{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;margin:12px 0;font-size:14px}
+.sheet{overflow:auto;border:1px solid var(--line);border-radius:12px;max-width:100%}table{width:100%;border-collapse:collapse;min-width:1030px;text-align:left;font-size:13px}
+th{background:#eff4fa;font-weight:750;color:#405a78;white-space:nowrap}th,td{padding:12px 11px;border-bottom:1px solid #e8eef4;vertical-align:top}
+tbody tr:hover{background:#f8fbff}tbody tr:last-child td{border-bottom:0}.warranty{font-weight:750;color:#123c72;white-space:nowrap}
+.customer{font-weight:650}.details{font-size:12px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.chip{display:inline-flex;border-radius:99px;padding:4px 9px;font-size:12px;font-weight:700;background:#eaf0fa;color:#385477;white-space:nowrap}
+.chip.active{background:#e5f7eb;color:#176044}.chip.expired,.chip.void{background:#fff0ee;color:#9b3434}.chip.claimed,.chip.replaced{background:#fff3dc;color:#825411}
+.tiny{font-size:12px;padding:8px 10px;white-space:nowrap}
+.empty{padding:45px 10px;text-align:center;color:var(--muted)}
+.pager{display:flex;align-items:center;gap:12px;justify-content:flex-end;margin-top:14px}
+dialog{max-width:660px;width:calc(100% - 30px);border:0;border-radius:17px;padding:0;box-shadow:0 15px 70px #081e3b55;color:var(--ink)}
+dialog::backdrop{background:#0e203a86}.modalTop{display:flex;justify-content:space-between;gap:10px;padding:20px;border-bottom:1px solid var(--line)}.modalBody{padding:20px;max-height:65vh;overflow:auto}
+dl{display:grid;grid-template-columns:130px 1fr;gap:9px 12px;margin:0 0 20px}dt{color:var(--muted)}dd{margin:0;overflow-wrap:anywhere}
+.timeline{border-left:2px solid #bed3eb;padding-left:18px}.event{margin-bottom:16px}.event b{display:block}.event p{margin:3px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+footer{color:#77889b;font-size:12px;margin-top:22px}
+@media(max-width:790px){.filters{grid-template-columns:1fr 1fr}.filters .full{grid-column:1/-1}.card{padding:14px}main{padding:0 12px}dl{grid-template-columns:100px 1fr}}
+@media(max-width:440px){.filters{grid-template-columns:1fr}.filters .full{grid-column:1}.filters button{width:100%}}
+</style>
+</head>
+<body>
+<header><div class="brand">WESTIME THAILAND · INTERNAL USE ONLY</div><h1>ทะเบียนลูกค้ารับประกัน</h1><p>ค้นหาข้อมูลรับประกัน ดูประวัติ และส่งออก Excel — สำหรับ Admin ที่ได้รับอนุญาตเท่านั้น</p></header>
+<main>
+<div class="bar"><a href="./">← กลับหน้า Activate Warranty</a><span id="account" class="muted small"></span></div>
+<div id="notice" role="status" aria-live="polite" class="hidden"></div>
+<section class="card login" id="loginPanel"><h2>เข้าสู่ระบบเจ้าหน้าที่</h2>
+<p class="muted">โปรดใช้บัญชี Admin เดียวกับระบบ Activate Warranty</p>
+<form id="loginForm"><label for="email">อีเมล</label><input id="email" type="email" autocomplete="username" required>
+<label for="password">รหัสผ่าน</label><input id="password" type="password" autocomplete="current-password" required>
+<button type="submit" class="primary" id="loginBtn">เข้าสู่ระบบ</button></form></section>
+<div id="registry" class="hidden">
+<section class="card">
+<div class="bar"><h2>ค้นหาทะเบียนรับประกัน</h2><button id="logout" class="secondary tiny" type="button">ออกจากระบบ</button></div>
+<form class="filters" id="searchForm">
+<div class="full"><label for="search">ค้นหา Warranty ID, Order ID, รุ่น, SKU, ชื่อ, เบอร์โทร หรืออีเมล</label><input id="search" maxlength="80" placeholder="เช่น 38-6658 หรือ WTH-26-..." autocomplete="off"></div>
+<div><label for="status">สถานะที่บันทึกไว้</label><select id="status"><option value="">ทั้งหมด</option><option value="active">ใช้งานอยู่</option><option value="expired">หมดประกัน</option><option value="claimed">เคลมแล้ว</option><option value="replaced">เปลี่ยนสินค้าแล้ว</option></select></div>
+<button type="submit" class="primary">ค้นหา</button><button id="export" type="button" class="secondary">ส่งออก Excel (.xlsx)</button>
+</form>
+<p class="small muted">แสดงรายการที่เปิดใช้รับประกันแล้วเท่านั้น ไม่รวมรหัสที่ยังไม่ได้ใช้หรือยกเลิก • ข้อมูลลูกค้าเป็นความลับ</p>
+</section>
+<section class="card">
+<div class="summary"><div><strong id="count">—</strong> <span class="muted">รายการที่ตรงเงื่อนไข</span></div><span class="muted small" id="loading"></span></div>
+<div class="sheet"><table><thead><tr><th>Warranty ID</th><th>คำสั่งซื้อ</th><th>สินค้า</th><th>ลูกค้า</th><th>วันที่ซื้อ</th><th>หมดประกัน</th><th>สถานะ</th><th>ลงทะเบียน</th><th>ประวัติ</th></tr></thead><tbody id="tbody"><tr><td colspan="9" class="empty">กำลังตรวจสอบข้อมูล…</td></tr></tbody></table></div>
+<div class="pager"><button id="prev" type="button" class="secondary tiny" disabled>ก่อนหน้า</button><span id="pageInfo" class="small muted">หน้า 1</span><button id="next" type="button" class="secondary tiny" disabled>ถัดไป</button></div>
+</section>
+</div>
+<footer>Westime Thailand Warranty Management · โปรดเก็บรักษาไฟล์ Excel ที่ดาวน์โหลดอย่างปลอดภัย และอย่าส่งข้อมูลลูกค้าผ่านช่องทางสาธารณะ</footer>
+</main>
+<dialog id="historyDialog" aria-labelledby="historyTitle"><div class="modalTop"><h2 id="historyTitle">รายละเอียดรับประกัน</h2><button class="secondary tiny" id="closeHistory" type="button">ปิด</button></div><div class="modalBody"><dl id="metadata"></dl><h3>ประวัติการดำเนินการ</h3><div id="eventList" class="timeline"></div><p class="small muted">แสดงเหตุการณ์ที่ถูกบันทึกใน Warranty Events เท่านั้น หากมีการเคลมที่ยังไม่ได้บันทึกในระบบ อาจไม่ปรากฏที่นี่</p></div></dialog>
+<script>
+"use strict";
+const URL_SUPABASE="https://nfgkraprscchovvwoyaw.supabase.co";
+const API=URL_SUPABASE+"/functions/v1/admin-warranty-registry";
+const PUBLISHABLE_KEY="sb_publishable_14eF0zO-NXMFSg2XwjoiAw_7UVRjzJy";
+const $=id=>document.getElementById(id);
+const client=window.supabase.createClient(URL_SUPABASE,PUBLISHABLE_KEY);
+const state={page:1,total:0,rows:[],search:"",status:"",loading:false};
+const pageSize=25;
+const titles={active:"อยู่ในประกัน",expired:"หมดประกัน",claimed:"มีการเคลม",replaced:"เปลี่ยนสินค้าแล้ว"};
+function notice(msg,type=""){const n=$("notice");n.textContent=msg;n.className=msg?(type||""):"hidden"}
+function date(v,withTime=false){if(!v)return "—";try {if(!withTime&&/^\d{4}-\d\d-\d\d$/.test(v))return new Date(v+"T12:00:00+07:00").toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"numeric",timeZone:"Asia/Bangkok"});return new Date(v).toLocaleString("th-TH",{day:"numeric",month:"short",year:"numeric",hour:withTime?"2-digit":undefined,minute:withTime?"2-digit":undefined,timeZone:"Asia/Bangkok"});}catch{return String(v)}}
+function effectiveStatus(r){const today=new Intl.DateTimeFormat("en-CA",{year:"numeric",month:"2-digit",day:"2-digit",timeZone:"Asia/Bangkok"}).format(new Date());return r.status==="active"&&r.warranty_expires_on&&r.warranty_expires_on<today?"expired":r.status}
+function cell(tr,value,cls=""){const td=document.createElement("td");if(cls)td.className=cls;td.textContent=value??"—";tr.appendChild(td);return td}
+function sub(parent,text,cls="details"){const d=document.createElement("div");d.className=cls;d.textContent=text||"—";parent.appendChild(d)}
+async function request(body){const {data:{session}}=await client.auth.getSession();if(!session?.access_token)throw new Error("กรุณาเข้าสู่ระบบใหม่");let response;
+try{response=await fetch(API,{method:"POST",headers:{"content-type":"application/json","apikey":PUBLISHABLE_KEY,"authorization":"Bearer "+session.access_token},body:JSON.stringify(body),cache:"no-store"});}catch{throw new Error("ติดต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่")}
+const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw new Error(data.message||"โหลดข้อมูลไม่สำเร็จ");return data}
+function setBusy(b){state.loading=b;$("prev").disabled=b||state.page<=1;$("next").disabled=b||state.page*pageSize>=state.total;$("loading").textContent=b?"กำลังโหลดข้อมูล…":"";$("export").disabled=b}
+function render(){const body=$("tbody");body.replaceChildren();if(!state.rows.length){const tr=document.createElement("tr");cell(tr,"ไม่พบรายการรับประกันที่ตรงเงื่อนไข","empty").colSpan=9;body.appendChild(tr)}
+for(const r of state.rows){const tr=document.createElement("tr");cell(tr,r.warranty_id,"warranty");cell(tr,r.order_id||"—");const product=cell(tr,r.model||r.brand||"—");sub(product,[r.external_sku,r.color].filter(Boolean).join(" · "));const customer=cell(tr,r.customer_name||"ไม่ได้กรอก","customer");sub(customer,r.customer_phone||"ไม่มีเบอร์ติดต่อ");if(r.customer_email)sub(customer,r.customer_email);cell(tr,date(r.purchase_date));cell(tr,date(r.warranty_expires_on));const st=cell(tr,"");const mark=document.createElement("span");const s=effectiveStatus(r);mark.className="chip "+s;mark.textContent=titles[s]||s;st.appendChild(mark);cell(tr,date(r.registered_at||r.activated_at||r.created_at,true));const action=cell(tr,"");const btn=document.createElement("button");btn.className="secondary tiny";btn.type="button";btn.textContent="ดูประวัติ";btn.addEventListener("click",()=>openHistory(r));action.appendChild(btn);body.appendChild(tr)}
+$("count").textContent=state.total.toLocaleString("th-TH");$("pageInfo").textContent="หน้า "+state.page+" / "+Math.max(1,Math.ceil(state.total/pageSize));setBusy(false)}
+async function load(){setBusy(true);notice("");try{const result=await request({action:"list",page:state.page,pageSize,search:state.search,status:state.status});state.rows=result.rows;state.total=result.total;render()}catch(e){state.rows=[];state.total=0;render();notice(e.message||String(e),"error")}}
+function addMeta(k,v){const key=document.createElement("dt"),value=document.createElement("dd");key.textContent=k;value.textContent=v??"—";$("metadata").append(key,value)}
+async function openHistory(r){$("metadata").replaceChildren();$("eventList").replaceChildren();$("historyTitle").textContent=r.warranty_id;addMeta("เลขคำสั่งซื้อ",r.order_id||"—");addMeta("รุ่น / สี",[r.model,r.color].filter(Boolean).join(" · "));addMeta("SKU",r.external_sku);addMeta("ลูกค้า",r.customer_name);addMeta("เบอร์โทร",r.customer_phone);addMeta("อีเมล",r.customer_email);addMeta("วันที่ซื้อ",date(r.purchase_date));addMeta("วันหมดประกัน",date(r.warranty_expires_on));addMeta("สถานะ",titles[effectiveStatus(r)]||r.status);addMeta("บันทึกโดย",r.registration_source||"Admin / QR");addMeta("รหัสสินค้าใหม่",r.replaced_by_warranty_id||"—");$("eventList").textContent="กำลังโหลดประวัติ…";$("historyDialog").showModal();try{const data=await request({action:"history",id:r.id});$("eventList").replaceChildren();if(!data.events.length)$("eventList").textContent="ยังไม่มีเหตุการณ์บันทึกไว้";for(const ev of data.events){const div=document.createElement("div");div.className="event";const title=document.createElement("b");title.textContent=ev.event_type||"เหตุการณ์";div.appendChild(title);sub(div,date(ev.created_at,true),"small muted");if(ev.note)sub(div,ev.note,"");$("eventList").appendChild(div)}}catch(e){$("eventList").textContent=e.message}}
+$("closeHistory").addEventListener("click",()=>$("historyDialog").close());
+$("searchForm").addEventListener("submit",e=>{e.preventDefault();state.search=$("search").value.trim();state.status=$("status").value;state.page=1;load()});
+$("prev").addEventListener("click",()=>{if(state.page>1){state.page--;load()}});
+$("next").addEventListener("click",()=>{if(state.page*pageSize<state.total){state.page++;load()}});
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginBtn").disabled=true;notice("กำลังเข้าสู่ระบบ…");const {error}=await client.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});$("loginBtn").disabled=false;if(error)return notice("เข้าสู่ระบบไม่สำเร็จ: "+error.message,"error");$("password").value="";await start()});
+$("logout").addEventListener("click",async()=>{await client.auth.signOut();$("registry").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("account").textContent="";state.rows=[];notice("ออกจากระบบแล้ว")});
+async function start(){const {data:{session}}=await client.auth.getSession();if(!session){$("registry").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("account").textContent="";return}
+$("account").textContent=session.user.email||"Admin";try{await request({action:"list",page:1,pageSize:1,search:"",status:""});$("loginPanel").classList.add("hidden");$("registry").classList.remove("hidden");state.page=1;await load()}catch(e){$("registry").classList.add("hidden");$("loginPanel").classList.remove("hidden");notice(e.message,"error")}}
+/* Write a minimal standards-compliant XLSX file in the browser. Data never goes to another export service. */
+const enc=new TextEncoder();
+function xml(v){return String(v??"").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;")}
+function crc32(buf){let c=0xffffffff;for(const b of buf){c^=b;for(let j=0;j<8;j++)c=(c>>>1)^(0xedb88320&-(c&1))}return(c^0xffffffff)>>>0}
+function packZip(files){const local=[],central=[];let offset=0,centralLength=0;for(const [name,content] of files){const n=enc.encode(name),d=enc.encode(content),crc=crc32(d);
+const l=new Uint8Array(30+n.length),a=new DataView(l.buffer);a.setUint32(0,0x04034b50,true);a.setUint16(4,20,true);a.setUint16(6,0x800,true);a.setUint32(14,crc,true);a.setUint32(18,d.length,true);a.setUint32(22,d.length,true);a.setUint16(26,n.length,true);l.set(n,30);local.push(l,d);
+const c=new Uint8Array(46+n.length),b=new DataView(c.buffer);b.setUint32(0,0x02014b50,true);b.setUint16(4,20,true);b.setUint16(6,20,true);b.setUint16(8,0x800,true);b.setUint32(16,crc,true);b.setUint32(20,d.length,true);b.setUint32(24,d.length,true);b.setUint16(28,n.length,true);b.setUint32(42,offset,true);c.set(n,46);central.push(c);offset+=l.length+d.length;centralLength+=c.length}
+const end=new Uint8Array(22),z=new DataView(end.buffer);z.setUint32(0,0x06054b50,true);z.setUint16(8,files.length,true);z.setUint16(10,files.length,true);z.setUint32(12,centralLength,true);z.setUint32(16,offset,true);return new Blob([...local,...central,end],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})}
+function workbook(rows){const columns=["Warranty ID","Order ID","แบรนด์","รุ่น","สี","SKU","สถานะ","วันที่ซื้อ","หมดประกัน","วันที่ลงทะเบียน","ชื่อผู้ลงทะเบียน","เบอร์โทร","อีเมล","ช่องทางขาย","แหล่งลงทะเบียน","รหัสที่เปลี่ยนแทน"];
+const values=[columns,...rows.map(r=>[r.warranty_id,r.order_id,r.brand,r.model,r.color,r.external_sku,titles[effectiveStatus(r)]||r.status,r.purchase_date,r.warranty_expires_on,r.registered_at||r.activated_at,r.customer_name,r.customer_phone,r.customer_email,r.sales_channel,r.registration_source,r.replaced_by_warranty_id])];
+const sheet='<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/><sheetData>'+values.map((row,i)=>'<row r="'+(i+1)+'">'+row.map((v,j)=>{let col="",n=j+1;while(n){n--;col=String.fromCharCode(65+n%26)+col;n=Math.floor(n/26)}return '<c r="'+col+(i+1)+'" t="inlineStr"><is><t xml:space="preserve">'+xml(v)+'</t></is></c>'}).join("")+'</row>').join("")+'</sheetData></worksheet>';
+return packZip([
+["[Content_Types].xml",'<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'],
+["_rels/.rels",'<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+["xl/workbook.xml",'<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Westime Warranty" sheetId="1" r:id="rId1"/></sheets></workbook>'],
+["xl/_rels/workbook.xml.rels",'<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>'],
+["xl/worksheets/sheet1.xml",sheet]
+])}
+$("export").addEventListener("click",async()=>{if(state.loading)return;$("export").disabled=true;notice("กำลังจัดเตรียมไฟล์ Excel…");try{let result=await request({action:"list",search:state.search,status:state.status,page:1,pageSize:100});if(result.total>10000)throw new Error("ผลลัพธ์มากกว่า 10,000 รายการ กรุณาค้นหาให้แคบลงก่อนส่งออก");const rows=[...result.rows];let page=2;while(rows.length<result.total){result=await request({action:"list",search:state.search,status:state.status,page,pageSize:100});if(!result.rows.length)throw new Error("การดาวน์โหลดข้อมูลไม่ครบ กรุณาลองใหม่");rows.push(...result.rows);page++}
+const blob=workbook(rows),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="Westime_Warranty_Registry_"+new Date().toISOString().slice(0,10)+".xlsx";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);notice("สร้างไฟล์ Excel แล้ว "+rows.length+" รายการ กรุณาจัดเก็บข้อมูลลูกค้าอย่างปลอดภัย","ok")}catch(e){notice(e.message||String(e),"error")}finally{$("export").disabled=false}});
+start();
+</script>
+</body>
+</html>
