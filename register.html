@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>ลงทะเบียนรับประกันสินค้า | Westime Thailand</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#182e52;font:15px/1.6 system-ui,Arial,sans-serif}header{background:#192e55;color:#fff;padding:28px 16px;text-align:center}
+header p{margin:6px 0 0;color:#dce6f6}main{max-width:610px;margin:24px auto;padding:0 15px}.box{background:#fff;border:1px solid #dce4ef;border-radius:16px;padding:22px;margin:15px 0;box-shadow:0 7px 18px #15213a0a}h1{font-size:25px;margin:0}h2{font-size:19px;margin:0 0 12px}label{display:block;font-weight:700;margin:14px 0 7px}input{width:100%;padding:12px 14px;border:1px solid #bfcee0;border-radius:10px;font:inherit}button{width:100%;background:#192e55;color:#fff;border:0;border-radius:10px;padding:13px;font:inherit;font-weight:750;margin-top:13px;cursor:pointer}button:disabled{opacity:.6}.note{color:#647590;font-size:13px}.hide{display:none}.status{padding:12px;border-radius:10px;margin-top:14px;background:#eef4ff;white-space:pre-line}.error{background:#fff0ef;color:#af302e}.ok{background:#eaf8ef;color:#126c42}.detail{background:#f4f7fc;padding:14px;border-radius:10px;margin:12px 0;white-space:pre-line}.check{display:flex;gap:10px;align-items:flex-start;font-weight:400}.check input{width:auto;flex:none;margin-top:5px}a{color:#164e88}footer{text-align:center;font-size:12px;color:#728198;padding:20px}
+</style>
+</head>
+<body>
+<header><div style="letter-spacing:2px;font-size:12px">WESTIME THAILAND</div><h1>ลงทะเบียนรับประกันสินค้า</h1><p>รับประกัน 1 ปี นับจากวันที่ซื้อ ตามเงื่อนไข Westime Thailand</p></header>
+<main>
+<section class="box">
+<h2>1. ตรวจสอบ Warranty ID</h2>
+<p class="note">ใช้รหัสบนใบรับประกันที่ได้รับพร้อมนาฬิกา หรือสแกน QR บนใบรับประกัน</p>
+<form id="lookupForm">
+<label for="warranty">Warranty ID</label>
+<input id="warranty" maxlength="80" placeholder="WTH-26-XXXXXXXX" autocomplete="off" required>
+<button id="lookupButton">ตรวจสอบ Warranty ID</button>
+</form>
+<div class="status hide" id="message" role="status" aria-live="polite"></div>
+<div class="detail hide" id="product"></div>
+</section>
+<section class="box hide" id="registration">
+<h2>2. ยืนยันคำสั่งซื้อ</h2>
+<p class="note">กรอกเลขคำสั่งซื้อจาก TikTok Shop ให้ตรงกับสินค้าที่ได้รับ</p>
+<form id="registrationForm">
+<label for="order">เลขคำสั่งซื้อ (Order ID)</label>
+<input id="order" inputmode="numeric" maxlength="30" required placeholder="เลขคำสั่งซื้อ TikTok Shop">
+<label for="name">ชื่อ-นามสกุล (ไม่บังคับ)</label>
+<input id="name" autocomplete="name" maxlength="120">
+<label for="phone">เบอร์โทร (ไม่บังคับ)</label>
+<input id="phone" type="tel" autocomplete="tel" maxlength="40">
+<label for="email">อีเมล (ไม่บังคับ)</label>
+<input id="email" type="email" autocomplete="email" maxlength="200">
+<label class="check"><input id="consent" type="checkbox" required><span>ข้าพเจ้ายืนยันข้อมูลถูกต้องและยินยอมให้ Westime Thailand ใช้ข้อมูลสำหรับการลงทะเบียนรับประกันและบริการหลังการขาย</span></label>
+<button id="registerButton">ยืนยันการลงทะเบียน</button>
+</form>
+<p class="note">การลงทะเบียนไม่เปลี่ยนวันเริ่มรับประกัน ระยะเวลา 1 ปีนับจากวันที่ซื้อ</p>
+</section>
+<section class="box"><h2>เงื่อนไขการรับประกัน</h2><p>คุ้มครองกลไกและข้อผิดพลาดจากการผลิต รวมถึงแบตเตอรี่ ไม่คุ้มครองกระจกแตก สายสึกหรอตามการใช้งาน ความเสียหายจากอุบัติเหตุ หรือน้ำเข้าจากการใช้งานไม่ถูกต้อง</p><p class="note">หากหา Warranty ID หรือเลขคำสั่งซื้อไม่พบ กรุณาติดต่อ LINE Westime Thailand หรือร้านค้าที่สั่งซื้อ</p></section>
+<p style="text-align:center"><a href="/">ตรวจสอบสถานะการรับประกัน</a></p>
+</main>
+<footer>บริการหลังการขายโดย Westime Thailand</footer>
+<script>
+"use strict";
+const VERIFY="https://nfgkraprscchovvwoyaw.supabase.co/functions/v1/verify-warranty";
+const REGISTER="https://nfgkraprscchovvwoyaw.supabase.co/functions/v1/register-warranty";
+const $=id=>document.getElementById(id);
+let currentId="";
+function alertState(message,mode=""){const el=$("message");el.textContent=message;el.className="status "+(mode||"")}
+function details(p){const lines=["Warranty ID: "+(p.warrantyId||"-"),"สินค้า: "+[p.brand,p.model,p.color].filter(Boolean).join(" / "),"สถานะ: "+(p.status||"-"),"วันที่ซื้อ: "+(p.purchaseDate||"-"),"หมดประกัน: "+(p.warrantyExpiresOn||"-")];$("product").textContent=lines.join("\n");$("product").classList.remove("hide")}
+async function lookup(){
+ const id=$("warranty").value.trim().toUpperCase();
+ if(!id){alertState("กรุณากรอก Warranty ID","error");return}
+ const button=$("lookupButton");button.disabled=true;alertState("กำลังตรวจสอบ...");$("registration").classList.add("hide");$("product").classList.add("hide");currentId="";
+ try{
+  const response=await fetch(VERIFY+"?id="+encodeURIComponent(id),{headers:{"Accept":"application/json"},cache:"no-store"});
+  const data=await response.json();
+  if(!response.ok||!data.ok||!data.product)throw new Error(data.message||"ตรวจสอบไม่สำเร็จ");
+  currentId=data.product.warrantyId;details(data.product);
+  if(data.registrationRequired===true){$("registration").classList.remove("hide");alertState("พบ Warranty ID แล้ว กรุณายืนยันคำสั่งซื้อเพื่อเปิดประกัน","ok")}
+  else alertState("พบข้อมูลการรับประกันในระบบแล้ว ไม่ต้องลงทะเบียนซ้ำ","ok");
+ }catch(e){alertState(e.message||"ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่","error")}
+ finally{button.disabled=false}
+}
+$("lookupForm").addEventListener("submit",event=>{event.preventDefault();lookup()});
+$("registrationForm").addEventListener("submit",async event=>{
+ event.preventDefault();if(!currentId){alertState("กรุณาตรวจสอบ Warranty ID ก่อน","error");return}
+ const button=$("registerButton");button.disabled=true;alertState("กำลังบันทึกการลงทะเบียน...");
+ try{
+  const response=await fetch(REGISTER,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({warrantyId:currentId,orderId:$("order").value.trim(),customerName:$("name").value.trim(),customerPhone:$("phone").value.trim(),customerEmail:$("email").value.trim(),consent:$("consent").checked})});
+  const data=await response.json();
+  if(!response.ok||!data.ok||!data.product)throw new Error(data.message||"ลงทะเบียนไม่สำเร็จ");
+  details(data.product);$("registration").classList.add("hide");$("registrationForm").reset();alertState("ลงทะเบียนรับประกันสำเร็จแล้ว","ok");window.scrollTo({top:0,behavior:"smooth"});
+ }catch(e){alertState(e.message||"ลงทะเบียนไม่สำเร็จ โปรดลองใหม่หรือติดต่อ LINE Westime Thailand","error")}
+ finally{button.disabled=false}
+});
+const initial=new URLSearchParams(location.search).get("id");
+if(initial){$("warranty").value=initial;lookup()}
+</script>
+</body></html>
