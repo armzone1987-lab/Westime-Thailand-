@@ -2,84 +2,149 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>ลงทะเบียนรับประกันสินค้า | Westime Thailand</title>
+<title>ลงทะเบียนรับประกันด้วยเลขคำสั่งซื้อ | Westime Thailand</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#182e52;font:15px/1.6 system-ui,Arial,sans-serif}header{background:#192e55;color:#fff;padding:28px 16px;text-align:center}
-header p{margin:6px 0 0;color:#dce6f6}main{max-width:610px;margin:24px auto;padding:0 15px}.box{background:#fff;border:1px solid #dce4ef;border-radius:16px;padding:22px;margin:15px 0;box-shadow:0 7px 18px #15213a0a}h1{font-size:25px;margin:0}h2{font-size:19px;margin:0 0 12px}label{display:block;font-weight:700;margin:14px 0 7px}input{width:100%;padding:12px 14px;border:1px solid #bfcee0;border-radius:10px;font:inherit}button{width:100%;background:#192e55;color:#fff;border:0;border-radius:10px;padding:13px;font:inherit;font-weight:750;margin-top:13px;cursor:pointer}button:disabled{opacity:.6}.note{color:#647590;font-size:13px}.hide{display:none}.status{padding:12px;border-radius:10px;margin-top:14px;background:#eef4ff;white-space:pre-line}.error{background:#fff0ef;color:#af302e}.ok{background:#eaf8ef;color:#126c42}.detail{background:#f4f7fc;padding:14px;border-radius:10px;margin:12px 0;white-space:pre-line}.check{display:flex;gap:10px;align-items:flex-start;font-weight:400}.check input{width:auto;flex:none;margin-top:5px}a{color:#164e88}footer{text-align:center;font-size:12px;color:#728198;padding:20px}
+:root{--navy:#192c52;--ink:#102a52;--muted:#64748b;--border:#dce5f0;--soft:#f3f6fa;--green:#176742}
+*{box-sizing:border-box}[hidden]{display:none!important}body{font:15px/1.58 system-ui,"Noto Sans Thai",Tahoma,sans-serif;color:var(--ink);background:var(--soft);margin:0}
+main{max-width:1170px;margin:0 auto;padding:35px 20px 56px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.1em;color:#896319}
+h1{font-size:clamp(27px,3vw,37px);margin:7px 0 8px;line-height:1.3}h2{font-size:20px;line-height:1.4;margin:0 0 8px}
+h3{font-size:17px;margin:0 0 8px}.intro{color:var(--muted);margin:0 0 24px}
+.steps{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 24px}.step{border:1px solid #d5e0ec;border-radius:8px;padding:10px 12px;color:#65809b;background:transparent;font-size:12px;font-weight:650}.step.active{color:#fff;background:var(--navy);border-color:var(--navy)}
+.layout{display:grid;grid-template-columns:minmax(0,1.66fr) minmax(280px,1fr);gap:24px;align-items:start}
+.section{background:white;border:1px solid var(--border);border-radius:19px;padding:27px;box-shadow:0 12px 35px #1a30520a;margin-bottom:18px}.section.lookup{border-top:3px solid var(--navy)}
+small,.muted{color:var(--muted)}.muted{font-size:14px}
+label{display:block;font-weight:700;color:var(--ink);font-size:14px;margin:16px 0 7px}
+input:not([type=checkbox]),select{display:block;width:100%;padding:12px 14px;font:inherit;color:var(--ink);border:1px solid #bccbe0;border-radius:10px;background:#fff;min-height:48px}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:3px solid #b5cafa;outline-offset:2px}
+button{cursor:pointer;background:var(--navy);color:white;font:inherit;font-weight:750;border:0;border-radius:10px;padding:14px 16px}
+button:disabled{cursor:wait;opacity:.65}
+.full{width:100%;margin:14px 0 0}.help{font-size:12px;color:var(--muted);margin:12px 0}.help a,summary,a{color:#174f89}summary{font-size:13px;font-weight:700;cursor:pointer}
+.notice{border-radius:11px;padding:13px 15px;margin:15px 0;background:#eef5ff;color:#284f7c;white-space:pre-wrap;font-size:14px}
+.notice.success{background:#e9f7ef;color:#156a3f}.notice.error{background:#fff0ee;color:#a63634}
+.item{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 0;border-bottom:1px solid #e4ebf3}.item:last-child{border-bottom:0}
+.item strong{display:block;margin-bottom:3px}.item select{width:130px;min-width:120px}.subtitle{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.contact{display:grid;gap:10px}.consent{display:flex;align-items:flex-start;gap:9px;font-weight:400;color:#56667d;font-size:13px;line-height:1.5;margin:18px 0}.consent input{margin-top:4px;flex:0 0 18px;height:18px}
+.rule{border-top:1px solid var(--border);margin:18px 0}
+.done-row{padding:12px 0;border-bottom:1px solid var(--border)}.done-row:last-child{border:0}.code{font-weight:800;font-size:14px;overflow-wrap:anywhere}
+.copy{font-size:12px;background:white;border:1px solid #c6d6e7;color:var(--ink);padding:7px 12px;margin-top:6px}
+.promo{border:1px solid var(--border);border-radius:18px;background:white;overflow:hidden;margin-bottom:18px;box-shadow:0 5px 20px #192c5209}
+.promo .graphic{height:195px;background:linear-gradient(135deg,#e8f0fc 0%,white 55%,#ebf2fa 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:1px solid #e2e9f2}
+.promo .fila{font:bold italic 60px/1 Arial,sans-serif;color:#102c55;letter-spacing:3px}.promo .fila::first-letter{color:#d62832}
+.promo .caption{padding:15px 18px}.promo strong{display:block}.promo small{display:block;margin-top:4px}
+.aside{padding:26px;border:1px solid var(--border);border-radius:18px;background:white}.aside h2{font-size:21px}.aside h3{font-size:15px}.aside p{font-size:13px;color:var(--muted);margin:6px 0 0}.aside hr{border:0;border-top:1px solid var(--border);margin:19px 0}
+.bottom{font-size:13px;color:#62748c;padding:0 6px}.bottom a{color:#174f89}
+footer{text-align:center;color:#8290a2;font-size:12px;margin-top:28px}
+@media(max-width:790px){main{padding:22px 14px}.layout{grid-template-columns:1fr}.section{padding:21px}.aside{padding:21px}}
+@media(max-width:430px){.step{padding:8px;font-size:11px}.item{align-items:stretch;flex-direction:column}.item select{width:100%}.promo .graphic{height:132px}.promo .fila{font-size:46px}}
 </style>
 </head>
 <body>
-<header><div style="letter-spacing:2px;font-size:12px">WESTIME THAILAND</div><h1>ลงทะเบียนรับประกันสินค้า</h1><p>รับประกัน 1 ปี นับจากวันที่ซื้อ ตามเงื่อนไข Westime Thailand</p></header>
 <main>
-<section class="box">
-<h2>1. ตรวจสอบ Warranty ID</h2>
-<p class="note">ใช้รหัสบนใบรับประกันที่ได้รับพร้อมนาฬิกา หรือสแกน QR บนใบรับประกัน</p>
-<form id="lookupForm">
-<label for="warranty">Warranty ID</label>
-<input id="warranty" maxlength="80" placeholder="WTH-26-XXXXXXXX" autocomplete="off" required>
-<button id="lookupButton">ตรวจสอบ Warranty ID</button>
+<div class="eyebrow">— &nbsp; บริการหลังการขาย</div>
+<h1>ลงทะเบียนรับประกัน</h1>
+<p class="intro">ใช้เลขคำสั่งซื้อ TikTok Shop เพื่อลงทะเบียนและดูข้อมูลรับประกันสินค้าที่ซื้อจาก Westime Thailand</p>
+<div class="steps" aria-label="ขั้นตอนการลงทะเบียน"><div id="step1" class="step active">1 ตรวจสอบคำสั่งซื้อ</div><div id="step2" class="step">2 ยืนยันข้อมูล</div><div id="step3" class="step">3 ลงทะเบียนสำเร็จ</div></div>
+<div class="layout">
+<div>
+<section class="section lookup">
+<h2>เลขคำสั่งซื้อของคุณ</h2>
+<p class="muted">คัดลอกจากรายละเอียดคำสั่งซื้อใน TikTok Shop</p>
+<form id="self-lookup-form">
+<label for="self-order-id">เลขคำสั่งซื้อ (Order ID)</label>
+<input id="self-order-id" inputmode="numeric" autocomplete="off" maxlength="30" pattern="[0-9]{12,30}" placeholder="กรอกเลขคำสั่งซื้อ TikTok Shop" required>
+<button id="self-lookup" type="submit" class="full">ตรวจสอบคำสั่งซื้อ</button>
 </form>
-<div class="status hide" id="message" role="status" aria-live="polite"></div>
-<div class="detail hide" id="product"></div>
+<div class="help">ใช้เลขคำสั่งซื้อ ไม่ใช่เลขพัสดุ</div>
+<details><summary>หาเลขคำสั่งซื้อได้ที่ไหน?</summary><p class="muted">เปิด TikTok → โปรไฟล์ → คำสั่งซื้อของคุณ → เลือกสินค้าที่ซื้อ แล้วดูรายละเอียดเลขคำสั่งซื้อ (Order ID)</p></details>
 </section>
-<section class="box hide" id="registration">
-<h2>2. ยืนยันคำสั่งซื้อ</h2>
-<p class="note">กรอกเลขคำสั่งซื้อจาก TikTok Shop ให้ตรงกับสินค้าที่ได้รับ</p>
-<form id="registrationForm">
-<label for="order">เลขคำสั่งซื้อ (Order ID)</label>
-<input id="order" inputmode="numeric" maxlength="30" required placeholder="เลขคำสั่งซื้อ TikTok Shop">
-<label for="name">ชื่อ-นามสกุล (ไม่บังคับ)</label>
-<input id="name" autocomplete="name" maxlength="120">
-<label for="phone">เบอร์โทร (ไม่บังคับ)</label>
-<input id="phone" type="tel" autocomplete="tel" maxlength="40">
-<label for="email">อีเมล (ไม่บังคับ)</label>
-<input id="email" type="email" autocomplete="email" maxlength="200">
-<label class="check"><input id="consent" type="checkbox" required><span>ข้าพเจ้ายืนยันข้อมูลถูกต้องและยินยอมให้ Westime Thailand ใช้ข้อมูลสำหรับการลงทะเบียนรับประกันและบริการหลังการขาย</span></label>
-<button id="registerButton">ยืนยันการลงทะเบียน</button>
+<div id="self-message" class="notice" role="status" aria-live="polite" hidden></div>
+<section id="self-results" hidden class="section">
+<h2>ยืนยันสินค้าที่ได้รับ</h2>
+<div id="self-summary" class="muted"></div>
+<section id="self-existing" hidden><div class="rule"></div><h3>สินค้าที่ลงทะเบียนแล้ว</h3><div id="self-existing-list"></div></section>
+<form id="self-register-form" hidden>
+<div id="self-items"></div>
+<div class="rule"></div>
+<h3>ข้อมูลผู้ลงทะเบียน <span class="muted">(ไม่บังคับ)</span></h3>
+<div class="contact">
+<div><label for="self-name">ชื่อผู้ลงทะเบียน</label><input id="self-name" maxlength="120" autocomplete="name" placeholder="ชื่อ-นามสกุล"></div>
+<div><label for="self-phone">เบอร์โทรศัพท์</label><input id="self-phone" maxlength="40" type="tel" autocomplete="tel" placeholder="สำหรับติดต่อบริการหลังการขาย"></div>
+<div><label for="self-email">อีเมล</label><input id="self-email" maxlength="200" type="email" autocomplete="email" placeholder="name@example.com"></div>
+</div>
+<label class="consent"><input id="self-consent" type="checkbox" required><span>ข้าพเจ้ายืนยันข้อมูลสินค้าและยินยอมให้ Westime Thailand ใช้ข้อมูลที่ให้ไว้เพื่อการลงทะเบียนรับประกันและบริการหลังการขาย</span></label>
+<button type="submit" id="self-submit" class="full">ยืนยันการลงทะเบียน</button>
+<p class="help">ระยะเวลารับประกัน 1 ปีนับจากวันที่ซื้อ ไม่ใช่วันที่ลงทะเบียน</p>
 </form>
-<p class="note">การลงทะเบียนไม่เปลี่ยนวันเริ่มรับประกัน ระยะเวลา 1 ปีนับจากวันที่ซื้อ</p>
+<section id="self-success" hidden role="status" aria-live="polite"></section>
 </section>
-<section class="box"><h2>เงื่อนไขการรับประกัน</h2><p>คุ้มครองกลไกและข้อผิดพลาดจากการผลิต รวมถึงแบตเตอรี่ ไม่คุ้มครองกระจกแตก สายสึกหรอตามการใช้งาน ความเสียหายจากอุบัติเหตุ หรือน้ำเข้าจากการใช้งานไม่ถูกต้อง</p><p class="note">หากหา Warranty ID หรือเลขคำสั่งซื้อไม่พบ กรุณาติดต่อ LINE Westime Thailand หรือร้านค้าที่สั่งซื้อ</p></section>
-<p style="text-align:center"><a href="/">ตรวจสอบสถานะการรับประกัน</a></p>
+</div>
+<div>
+<div class="promo"><div class="graphic"><div class="fila">FILA</div><small>WATCH COLLECTION</small></div><div class="caption"><strong>FILA Watch</strong><small>บริการหลังการขายโดย Westime Thailand</small></div></div>
+<div class="aside"><strong>ดูแลโดย Westime Thailand</strong><h2 style="margin-top:15px">รับประกัน 1 ปี</h2><p>นับจากวันที่สั่งซื้อ</p><hr>
+<h3>ความคุ้มครอง</h3><p>กลไกและความผิดพลาดจากการผลิต รวมถึงแบตเตอรี่</p><hr>
+<h3>สิ่งที่ไม่ครอบคลุม</h3><p>กระจกแตก สายสึกหรอตามการใช้งาน น้ำเข้าจากการใช้งานไม่ถูกต้อง และความเสียหายจากอุบัติเหตุ</p></div>
+<p class="bottom"><strong>ต้องการความช่วยเหลือ?</strong><br>กลับไปที่แชท LINE ของ Westime Thailand แจ้งเลขคำสั่งซื้อเพื่อให้เจ้าหน้าที่ตรวจสอบได้ครับ</p>
+</div>
+</div>
+<footer>Westime Thailand Warranty Registration · <a href="/">ตรวจสอบ Warranty ID</a></footer>
 </main>
-<footer>บริการหลังการขายโดย Westime Thailand</footer>
 <script>
+(function(){
 "use strict";
-const VERIFY="https://nfgkraprscchovvwoyaw.supabase.co/functions/v1/verify-warranty";
-const REGISTER="https://nfgkraprscchovvwoyaw.supabase.co/functions/v1/register-warranty";
-const $=id=>document.getElementById(id);
-let currentId="";
-function alertState(message,mode=""){const el=$("message");el.textContent=message;el.className="status "+(mode||"")}
-function details(p){const lines=["Warranty ID: "+(p.warrantyId||"-"),"สินค้า: "+[p.brand,p.model,p.color].filter(Boolean).join(" / "),"สถานะ: "+(p.status||"-"),"วันที่ซื้อ: "+(p.purchaseDate||"-"),"หมดประกัน: "+(p.warrantyExpiresOn||"-")];$("product").textContent=lines.join("\n");$("product").classList.remove("hide")}
-async function lookup(){
- const id=$("warranty").value.trim().toUpperCase();
- if(!id){alertState("กรุณากรอก Warranty ID","error");return}
- const button=$("lookupButton");button.disabled=true;alertState("กำลังตรวจสอบ...");$("registration").classList.add("hide");$("product").classList.add("hide");currentId="";
- try{
-  const response=await fetch(VERIFY+"?id="+encodeURIComponent(id),{headers:{"Accept":"application/json"},cache:"no-store"});
-  const data=await response.json();
-  if(!response.ok||!data.ok||!data.product)throw new Error(data.message||"ตรวจสอบไม่สำเร็จ");
-  currentId=data.product.warrantyId;details(data.product);
-  if(data.registrationRequired===true){$("registration").classList.remove("hide");alertState("พบ Warranty ID แล้ว กรุณายืนยันคำสั่งซื้อเพื่อเปิดประกัน","ok")}
-  else alertState("พบข้อมูลการรับประกันในระบบแล้ว ไม่ต้องลงทะเบียนซ้ำ","ok");
- }catch(e){alertState(e.message||"ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่","error")}
- finally{button.disabled=false}
+const API="https://nfgkraprscchovvwoyaw.supabase.co/functions/v1/warranty-order";
+const APP_KEY="sb_publishable_14eF0zO-NXMFSg2XwjoiAw_7UVRjzJy";
+const byId=id=>document.getElementById(id);
+const el={lookupForm:byId("self-lookup-form"),orderId:byId("self-order-id"),lookup:byId("self-lookup"),message:byId("self-message"),results:byId("self-results"),summary:byId("self-summary"),existing:byId("self-existing"),existingList:byId("self-existing-list"),registerForm:byId("self-register-form"),items:byId("self-items"),submit:byId("self-submit"),name:byId("self-name"),phone:byId("self-phone"),email:byId("self-email"),consent:byId("self-consent"),success:byId("self-success")};
+let order=null,activeRequest=null;
+const clean=v=>String(v==null?"":v).trim();
+const dateLabel=value=>{if(!value||!/^\d{4}-\d{2}-\d{2}$/.test(String(value)))return "—";const d=new Date(String(value)+"T12:00:00+07:00");return Number.isNaN(d.valueOf())?"—":d.toLocaleDateString("th-TH",{day:"numeric",month:"long",year:"numeric",timeZone:"Asia/Bangkok"})};
+const txt=(tag,text,cls)=>{const node=document.createElement(tag);node.textContent=clean(text);if(cls)node.className=cls;return node};
+const statusName=s=>({active:"อยู่ในระยะเวลารับประกัน",expired:"หมดประกัน",claimed:"มีประวัติการเคลม",replaced:"เปลี่ยนสินค้าแล้ว"}[s]||clean(s));
+function showMessage(m,type){el.message.hidden=!m;el.message.textContent=m;el.message.className="notice "+(type||"")}
+function setStep(n){for(let i=1;i<=3;i++){byId("step"+i).className="step"+(i===n?" active":"")}}
+function requestUuid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const b=crypto.getRandomValues(new Uint8Array(16));b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;const s=Array.from(b,x=>x.toString(16).padStart(2,"0")).join("");return s.slice(0,8)+"-"+s.slice(8,12)+"-"+s.slice(12,16)+"-"+s.slice(16,20)+"-"+s.slice(20)}
+async function callApi(action,data){const response=await fetch(API,{method:"POST",mode:"cors",cache:"no-store",headers:{"Content-Type":"application/json","Accept":"application/json","apikey":APP_KEY},body:JSON.stringify(Object.assign({action},data))});const result=await response.json().catch(()=>({}));if(!response.ok||result.ok!==true)throw new Error(result.message||"ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่");return result}
+function productTitle(item){return [item.brand||"FILA",item.model||item.productName||"นาฬิกา",item.color||""].filter(Boolean).join(" · ")}
+function makeRegistered(data){
+ const arr=Array.isArray(data)?data:[];el.existing.hidden=arr.length===0;el.existingList.replaceChildren();
+ for(const item of arr){const div=txt("div","","done-row");div.append(txt("strong",productTitle(item)),txt("div","Warranty ID: "+clean(item.warrantyId),"code"),txt("div",statusName(item.status)+" · หมดประกัน "+dateLabel(item.expiresOn),"subtitle"));el.existingList.append(div)}
 }
-$("lookupForm").addEventListener("submit",event=>{event.preventDefault();lookup()});
-$("registrationForm").addEventListener("submit",async event=>{
- event.preventDefault();if(!currentId){alertState("กรุณาตรวจสอบ Warranty ID ก่อน","error");return}
- const button=$("registerButton");button.disabled=true;alertState("กำลังบันทึกการลงทะเบียน...");
- try{
-  const response=await fetch(REGISTER,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({warrantyId:currentId,orderId:$("order").value.trim(),customerName:$("name").value.trim(),customerPhone:$("phone").value.trim(),customerEmail:$("email").value.trim(),consent:$("consent").checked})});
-  const data=await response.json();
-  if(!response.ok||!data.ok||!data.product)throw new Error(data.message||"ลงทะเบียนไม่สำเร็จ");
-  details(data.product);$("registration").classList.add("hide");$("registrationForm").reset();alertState("ลงทะเบียนรับประกันสำเร็จแล้ว","ok");window.scrollTo({top:0,behavior:"smooth"});
- }catch(e){alertState(e.message||"ลงทะเบียนไม่สำเร็จ โปรดลองใหม่หรือติดต่อ LINE Westime Thailand","error")}
- finally{button.disabled=false}
-});
-const initial=new URLSearchParams(location.search).get("id");
-if(initial){$("warranty").value=initial;lookup()}
+function drawOrder(data){
+ order=data;activeRequest=null;setStep(2);el.success.hidden=true;el.success.replaceChildren();el.results.hidden=false;el.summary.replaceChildren();
+ el.summary.append(txt("div","คำสั่งซื้อ "+clean(data.orderId)),txt("div","วันที่สั่งซื้อ "+dateLabel(data.purchaseDate)));
+ makeRegistered(data.registered);el.items.replaceChildren();const items=Array.isArray(data.items)?data.items:[];let available=false;
+ items.forEach((item,idx)=>{const remaining=Math.max(0,Math.min(100,Number(item.remaining)||0));const div=txt("div","","item"),info=txt("div");info.append(txt("strong",productTitle(item)),txt("div","SKU "+(item.sku||"—")+" · ซื้อ "+(Number(item.quantity)||0)+" เรือน · ลงทะเบียนได้อีก "+remaining+" เรือน","subtitle"));div.append(info);
+  if(remaining>0){available=true;const field=document.createElement("select");field.dataset.index=String(idx);field.setAttribute("aria-label","จำนวนที่ต้องการลงทะเบียน: "+productTitle(item));for(let i=0;i<=remaining;i++){const opt=new Option(i+" เรือน",String(i),i===1,i===1);field.append(opt)}div.append(field)}else div.append(txt("span","ลงทะเบียนครบแล้ว","subtitle"));el.items.append(div)});
+ el.registerForm.hidden=!available;el.registerForm.reset();
+ if(!items.length)showMessage("พบคำสั่งซื้อ แต่ไม่มีรายการสินค้าสำหรับลงทะเบียน กรุณาติดต่อเจ้าหน้าที่","error");
+ else if(!available)showMessage("ลงทะเบียนสินค้าครบตามจำนวนที่ซื้อแล้ว สามารถตรวจสอบ Warranty ID ด้านล่างได้","success");
+ else showMessage("พบคำสั่งซื้อ กรุณาตรวจสอบสินค้าและยืนยันข้อมูลด้านล่าง","success");
+}
+async function lookupOrder(event){
+ event.preventDefault();const orderId=clean(el.orderId.value);if(!/^[0-9]{12,30}$/.test(orderId)){showMessage("กรุณากรอก Order ID เป็นตัวเลข 12–30 หลัก","error");return}
+ el.lookup.disabled=true;el.results.hidden=true;order=null;setStep(1);showMessage("กำลังตรวจสอบคำสั่งซื้อ...");
+ try{const res=await callApi("lookup",{orderId});if(!res.order||typeof res.order!=="object")throw new Error("ข้อมูลคำสั่งซื้อไม่ถูกต้อง");drawOrder(res.order)}catch(e){showMessage(e.message||"ตรวจสอบคำสั่งซื้อไม่สำเร็จ","error")}finally{el.lookup.disabled=false}
+}
+async function registerOrder(event){
+ event.preventDefault();if(!order||!el.consent.checked){showMessage("กรุณายอมรับเงื่อนไขการลงทะเบียน","error");return}
+ const choices=[];for(const field of el.items.querySelectorAll("select[data-index]")){const item=order.items[Number(field.dataset.index)],quantity=Number(field.value);if(item&&quantity>0&&Number.isInteger(quantity))choices.push({itemId:item.itemId,quantity})}
+ if(!choices.length){showMessage("กรุณาเลือกสินค้าอย่างน้อยหนึ่งเรือน","error");return}
+ const data={orderId:clean(order.orderId),items:choices,customerName:clean(el.name.value),customerPhone:clean(el.phone.value),customerEmail:clean(el.email.value).toLowerCase(),consent:true};
+ const fingerprint=JSON.stringify(data);if(!activeRequest||activeRequest.fingerprint!==fingerprint)activeRequest={fingerprint,requestId:requestUuid()};
+ el.submit.disabled=true;showMessage("กำลังบันทึกการลงทะเบียน...");
+ try{const res=await callApi("register",Object.assign({},data,{requestId:activeRequest.requestId}));
+ if(!res.registration||!Array.isArray(res.registration.products))throw new Error("ระบบส่งผลการลงทะเบียนไม่ครบ");
+ el.success.replaceChildren();el.success.append(txt("h3","ลงทะเบียนรับประกันสำเร็จ ✓"),txt("p","โปรดเก็บ Warranty ID ไว้สำหรับตรวจสอบการรับประกัน"));
+ for(const product of res.registration.products){const line=txt("div","","done-row");line.append(txt("strong",productTitle(product)),txt("div",clean(product.warrantyId),"code"));const b=txt("button","คัดลอก Warranty ID","copy");b.type="button";b.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(clean(product.warrantyId));b.textContent="คัดลอกแล้ว"}catch{b.textContent="โปรดเลือกคัดลอกรหัส"}});line.append(b);el.success.append(line)}
+ el.success.hidden=false;el.registerForm.hidden=true;activeRequest=null;setStep(3);showMessage("ลงทะเบียนเรียบร้อยแล้ว หากต้องการตรวจสอบอีกครั้ง ให้ค้นหาคำสั่งซื้อเดิม","success")
+ }catch(e){showMessage(e.message||"ไม่สามารถลงทะเบียนได้ กรุณาลองใหม่","error")}finally{el.submit.disabled=false}
+}
+el.lookupForm.addEventListener("submit",lookupOrder);
+el.registerForm.addEventListener("submit",registerOrder);
+const prefill=clean(new URLSearchParams(location.search).get("orderId"));if(/^[0-9]{12,30}$/.test(prefill))el.orderId.value=prefill;
+})();
 </script>
 </body></html>
