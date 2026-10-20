@@ -57,10 +57,8 @@ main{padding-top:25px;max-width:1200px}
 .hero-copy .eyebrow{color:#8b6a2b;letter-spacing:.15em}
 .hero-copy h1{font-size:clamp(30px,3vw,42px);letter-spacing:-.025em;margin:9px 0 12px;line-height:1.24}
 .hero-copy .intro{font-size:14px;line-height:1.8;max-width:475px;margin-bottom:25px}
-.hero-photo-wrap{height:330px;position:relative;overflow:hidden;background:#e9eef7}
-.hero-photo-wrap::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(248,250,254,.32),transparent 25%)}
-.hero-photo{width:100%;height:100%;object-fit:cover;object-position:49% 47%;display:block}
-.hero-watch-name{position:absolute;bottom:18px;right:20px;background:rgba(255,255,255,.88);color:#183d69;border:1px solid rgba(255,255,255,.8);padding:8px 12px;border-radius:11px;font-size:11px;font-weight:750;z-index:1;letter-spacing:.04em}
+.hero-photo-wrap{height:330px;position:relative;overflow:hidden;background:#e9eef7;isolation:isolate}
+.hero-photo{width:100%;height:100%;object-fit:cover;object-position:50% 45%;display:block;transform:scale(1.10);transform-origin:50% 52%;image-rendering:auto}
 .steps{margin:8px 0 0;gap:8px}
 .step{border:0;border-radius:999px;padding:9px 13px;background:#e8eef7;color:#73849c;font-size:12px;white-space:nowrap}
 .step.active{box-shadow:0 3px 9px rgba(12,45,89,.16)}
@@ -91,8 +89,8 @@ main{padding-top:25px;max-width:1200px}
 .side-note{background:#fff;border:1px solid #e1e8f0;border-radius:16px;padding:17px 18px;color:#5d6f8a;font-size:13px;margin-top:13px}
 footer{border-top:1px solid #e4eaf3;padding-top:22px;margin-top:32px}
 @media(max-width:900px){.brand-hero{grid-template-columns:minmax(0,1fr) minmax(0,.9fr)}.hero-copy{padding:24px 0 24px 22px}.hero-copy h1{font-size:30px}.hero-photo-wrap{height:290px}.step{font-size:11px;padding:8px 9px}}
-@media(max-width:790px){.site-nav-inner{padding:8px 15px}.brand-identity img{width:65px;height:52px}.brand-label{font-size:12px}main{padding:15px 14px 48px}.brand-hero{grid-template-columns:1fr;gap:0}.hero-copy{padding:24px 23px}.hero-photo-wrap{height:260px}.layout{grid-template-columns:1fr}.section{padding:22px}.steps{gap:7px}#self-lookup{width:100%;flex:1 1 auto}}
-@media(max-width:440px){.hero-photo-wrap{height:204px}.hero-copy h1{font-size:29px}.hero-copy .intro{font-size:13px}.step{font-size:10.5px;padding:8px 9px}.site-nav-inner{min-height:70px}.nav-link{font-size:11px;padding:9px}.brand-label{font-size:11px}.brand-identity{gap:9px}.brand-divider{height:28px}.hero-copy{padding:21px 19px}}
+@media(max-width:790px){.site-nav-inner{padding:8px 15px}.brand-identity img{width:65px;height:52px}.brand-label{font-size:12px}main{padding:15px 14px 48px}.brand-hero{grid-template-columns:1fr;gap:0}.hero-copy{padding:24px 23px}.hero-photo-wrap{height:260px}.hero-photo{object-position:50% 42%;transform:scale(1.12)}.layout{grid-template-columns:1fr}.section{padding:22px}.steps{gap:7px}#self-lookup{width:100%;flex:1 1 auto}}
+@media(max-width:440px){.hero-photo-wrap{height:215px}.hero-photo{object-position:50% 40%;transform:scale(1.14)}.hero-copy h1{font-size:29px}.hero-copy .intro{font-size:13px}.step{font-size:10.5px;padding:8px 9px}.site-nav-inner{min-height:70px}.nav-link{font-size:11px;padding:9px}.brand-label{font-size:11px}.brand-identity{gap:9px}.brand-divider{height:28px}.hero-copy{padding:21px 19px}}
 
 </style>
 </head>
@@ -108,7 +106,7 @@ footer{border-top:1px solid #e4eaf3;padding-top:22px;margin-top:32px}
 <p class="intro">เพียงใช้เลขคำสั่งซื้อจาก TikTok Shop เพื่อดูข้อมูลสินค้าและลงทะเบียนรับประกันกับ Westime Thailand</p>
 <div class="steps" aria-label="ขั้นตอนการลงทะเบียน"><div id="step1" class="step active">1 ตรวจสอบคำสั่งซื้อ</div><div id="step2" class="step">2 ยืนยันข้อมูล</div><div id="step3" class="step">3 ลงทะเบียนสำเร็จ</div></div>
 </div>
-<div class="hero-photo-wrap"><img class="hero-photo" src="/assets/fila-watch-hero-hq.webp" alt="นาฬิกา FILA Watches สีแดง ขาว และกรมท่า" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async"><span class="hero-watch-name">FILA WATCH COLLECTION</span></div>
+<div class="hero-photo-wrap"><img class="hero-photo" src="/assets/fila-watch-hero-hq.webp" alt="นาฬิกา FILA Watches สีแดง ขาว และกรมท่า" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async"></div>
 </section>
 <div class="layout">
 <div>
