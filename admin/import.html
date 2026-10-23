@@ -46,13 +46,14 @@ footer{text-align:center;color:#8090a1;font-size:12px;margin:30px 0}
 <div id="workArea" hidden>
 <section class="panel"><div class="row"><div class="grow"><h2>1. เลือกไฟล์ CSV จาก TikTok Shop</h2><p class="subtext">อ่านไฟล์ภายในอุปกรณ์ของคุณก่อนบันทึก รองรับคำสั่งซื้อปัจจุบันและย้อนหลัง ทั้งรอจัดส่ง อยู่ระหว่างขนส่ง และจัดส่งสำเร็จ โดยข้ามออเดอร์ยกเลิก/คืนสินค้า/คืนเงิน และไม่นำเข้าข้อมูลส่วนตัวลูกค้าจาก CSV</p></div><button class="secondary" id="logoutBtn" type="button">ออกจากระบบ</button></div>
 <label for="csvInput">TikTok Orders CSV</label><input type="file" id="csvInput" accept=".csv,text/csv">
-<p class="small muted">รองรับไฟล์ CSV สูงสุด 50 MB และหลายหมื่นออเดอร์ · ระบบแบ่งบันทึกครั้งละ 150 ออเดอร์ · ใช้คอลัมน์ Order ID, Order Status, Seller SKU, Variation, Quantity และ Created Time (หรือ Paid Time) · UTF-8</p>
+<p class="small muted">รองรับไฟล์ CSV สูงสุด 50 MB และหลายหมื่นออเดอร์ รวมสถานะ “เสร็จสมบูรณ์” · ระบบแบ่งบันทึกครั้งละ 150 ออเดอร์ · ใช้คอลัมน์ Order ID, Order Status, Seller SKU, Variation, Quantity และ Created Time (หรือ Paid Time) · UTF-8</p>
 <div class="banner">ข้อมูลที่จะบันทึก: Order ID, วันซื้อ, SKU, รุ่น, สี, จำนวน, Tracking, สถานะ และชื่อแบรนด์เท่าที่ระบุได้จากข้อมูลสินค้า — <strong>ไม่มีการสร้างหรือพิมพ์ Warranty QR</strong></div>
 </section>
 <section class="panel" id="previewPanel" hidden>
 <h2>2. ตรวจสอบรายการก่อนนำเข้า</h2>
 <p id="fileLabel" class="subtext"></p>
 <div class="stats"><div class="stat"><strong id="orderCount">0</strong><small>คำสั่งซื้อ</small></div><div class="stat"><strong id="unitCount">0</strong><small>นาฬิกา</small></div><div class="stat"><strong id="skuCount">0</strong><small>SKU/สี</small></div><div class="stat"><strong id="skipCount">0</strong><small>แถวที่ข้าม</small></div></div>
+<p id="skippedDetails" class="small muted" aria-live="polite"></p>
 <div class="sheet"><table><thead><tr><th>Seller SKU</th><th>รุ่น</th><th>สี</th><th>จำนวน</th></tr></thead><tbody id="itemsBody"></tbody></table></div>
 <p class="hint">การนำเข้าไฟล์เดิมซ้ำจะอัปเดตข้อมูลคำสั่งซื้อและจำนวนสินค้าเดิม ไม่ใช่สร้างรายการใหม่ซ้ำโดยอัตโนมัติ ระบบไม่เพิ่มรายการยกเลิก/คืนสินค้า/คืนเงิน และจะแบ่งบันทึกอัตโนมัติครั้งละไม่เกิน 150 ออเดอร์ กรุณาตรวจสอบยอดก่อนยืนยัน</p>
 <label class="check"><input type="checkbox" id="confirm"><span>ข้าพเจ้าตรวจสอบรายการที่จะแพ็ก รุ่น SKU สี และจำนวนแล้ว ยืนยันให้นำข้อมูลเข้าสู่ระบบรับประกัน</span></label>
@@ -426,7 +427,7 @@ function isEligibleStatus(orderStatus, orderSubstatus) {
   const combined=status+" "+substatus;
   if (/(ยกเลิก|คืนสินค้า|คืนเงิน|cancel|return|refund|rejected|failed delivery)/i.test(combined)) return false;
   // TikTok Shop exports use 'จัดส่งแล้ว' for both in-transit and delivered orders.
-  return /(ที่จะจัดส่ง|รอเข้ารับ|รอจัดส่ง|จัดส่งแล้ว|จัดส่งสำเร็จ|อยู่ระหว่างขนส่ง|to ship|ready to ship|awaiting collection|shipped|in transit|in_transit|delivered|completed)/i.test(combined);
+  return /(ที่จะจัดส่ง|รอเข้ารับ|รอจัดส่ง|จัดส่งแล้ว|จัดส่งสำเร็จ|อยู่ระหว่างขนส่ง|to ship|ready to ship|awaiting collection|shipped|in transit|in_transit|delivered|completed|เสร็จสมบูรณ์)/i.test(combined);
 }
 function hasCancellationOrReturn(row,map) {
   const cancellation=readCell(row,map,"Cancelation/Return Type");
@@ -481,6 +482,7 @@ function parseProductionCsv(text) {
     }
   });
   let skippedRows = 0;
+  const skipReasons={cancelReturnRefund:0,nonEligibleStatus:0,incompleteRow:0};
 
   matrix.slice(1).forEach(function (row) {
     const orderId = readCell(row, map, "Order ID").toUpperCase();
@@ -491,9 +493,19 @@ function parseProductionCsv(text) {
     const quantity = Number.parseInt(readCell(row, map, "Quantity"), 10);
     const date = normalizeDate(readCell(row, map, "Paid Time") || readCell(row, map, "Created Time"));
 
-    if (!orderId || excludedOrderIds.has(orderId) || !sku || !Number.isFinite(quantity) || quantity < 1 ||
-        !date || !isEligibleStatus(orderStatus, orderSubstatus)) {
+    if (excludedOrderIds.has(orderId)) {
       skippedRows += 1;
+      skipReasons.cancelReturnRefund += 1;
+      return;
+    }
+    if (!isEligibleStatus(orderStatus, orderSubstatus)) {
+      skippedRows += 1;
+      skipReasons.nonEligibleStatus += 1;
+      return;
+    }
+    if (!orderId || !sku || !Number.isFinite(quantity) || quantity < 1 || !date) {
+      skippedRows += 1;
+      skipReasons.incompleteRow += 1;
       return;
     }
 
@@ -565,7 +577,7 @@ function parseProductionCsv(text) {
   if (orders.length > MAX_ORDERS_PER_FILE) throw new Error("จำนวนออเดอร์เกิน "+MAX_ORDERS_PER_FILE.toLocaleString("th-TH")+" รายการ กรุณาแบ่ง CSV");
   if (unitCount > MAX_UNITS_PER_FILE) throw new Error("จำนวนสินค้าเกิน "+MAX_UNITS_PER_FILE.toLocaleString("th-TH")+" เรือน กรุณาแบ่ง CSV");
 
-  return { orders: orders, groups: groups, skippedRows: skippedRows, unitCount: unitCount };
+  return { orders: orders, groups: groups, skippedRows: skippedRows, skipReasons: skipReasons, sourceRowCount: matrix.length-1, unitCount: unitCount };
 }
 
 
@@ -588,6 +600,8 @@ function showJob(){
  $("unitCount").textContent=job.unitCount.toLocaleString("th-TH");
  $("skuCount").textContent=job.groups.length.toLocaleString("th-TH");
  $("skipCount").textContent=job.skippedRows.toLocaleString("th-TH");
+ const skip=job.skipReasons;
+ $("skippedDetails").textContent="CSV มี "+job.sourceRowCount.toLocaleString("th-TH")+" แถวสินค้า · ข้ามรายการยกเลิก/คืนสินค้า/คืนเงิน "+skip.cancelReturnRefund.toLocaleString("th-TH")+" แถว · สถานะไม่พร้อม/ค้างชำระ "+skip.nonEligibleStatus.toLocaleString("th-TH")+" แถว · ข้อมูลไม่ครบ "+skip.incompleteRow.toLocaleString("th-TH")+" แถว (นับเป็นแถวสินค้า ไม่ใช่จำนวนคำสั่งซื้อ)";
  $("itemsBody").replaceChildren();
  for(const group of job.groups){const tr=document.createElement("tr");for(const value of [group.sku,group.model,group.color,group.quantity]){const cell=document.createElement("td");cell.textContent=value;tr.appendChild(cell)}$("itemsBody").appendChild(tr)}
 }
