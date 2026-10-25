@@ -4,6 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
+<script>
+/* Keep historical QR and LINE links working, but remove ChatGPT campaign tag from the address bar. */
+(function(){
+  try {
+    const url=new URL(window.location.href);
+    if ((url.searchParams.get("utm_source") || "").toLowerCase() === "chatgpt.com") {
+      url.searchParams.delete("utm_source");
+      window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+    }
+  } catch (_) { /* Do not block warranty registration if history is unavailable. */ }
+})();
+</script>
 <title>ลงทะเบียนรับประกันด้วยเลขคำสั่งซื้อ | Westime Thailand</title>
 <style>
 :root{--navy:#192c52;--ink:#102a52;--muted:#64748b;--border:#dce5f0;--soft:#f3f6fa;--green:#176742}
