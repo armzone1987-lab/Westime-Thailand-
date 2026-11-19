@@ -123,6 +123,15 @@ footer{border-top:1px solid #e4eaf3;padding-top:22px;margin-top:32px}
 @media(max-width:790px){.site-nav-inner{padding:8px 15px}.brand-identity img{width:65px;height:52px}.brand-label{font-size:12px}main{padding:15px 14px 48px}.brand-hero{grid-template-columns:1fr;gap:0}.hero-copy{padding:24px 23px}.hero-photo-wrap{height:260px}.hero-photo{object-position:50% 42%;transform:scale(1.12)}.layout{grid-template-columns:1fr}.section{padding:22px}.steps{gap:7px}#self-lookup{width:100%;flex:1 1 auto}}
 @media(max-width:440px){.hero-photo-wrap{height:215px}.hero-photo{object-position:50% 40%;transform:scale(1.14)}.hero-copy h1{font-size:29px}.hero-copy .intro{font-size:13px}.step{font-size:10.5px;padding:8px 9px}.site-nav-inner{min-height:70px}.nav-link{font-size:11px;padding:9px}.brand-label{font-size:11px}.brand-identity{gap:9px}.brand-divider{height:28px}.hero-copy{padding:21px 19px}}
 
+/* Contextual brand presentation. No FILA authorization claims on MOVEMBER-only orders. */
+.brand-scope-note{border:1px solid #e7dfe0;background:#fff9f8;border-radius:16px;padding:20px 22px;margin-bottom:18px;box-shadow:0 7px 25px rgba(12,44,79,.04)}
+.brand-scope-note strong{display:block;color:#493b3b;font-size:18px;letter-spacing:.09em}
+.brand-scope-note p{font-size:13px;line-height:1.75;color:#665e66;margin:7px 0 0}
+body[data-brand-scope="movember"] .brand-hero{grid-template-columns:1fr;background:linear-gradient(125deg,#fffdfb 0%,#f8eff0 100%)}
+body[data-brand-scope="movember"] .hero-photo-wrap,body[data-brand-scope="movember"] .promo,body[data-brand-scope="movember"] .auth-card,body[data-brand-scope="movember"] .aside{display:none}
+body[data-brand-scope="mixed"] .brand-hero{background:linear-gradient(125deg,#fbfcff,#fdf6f3);grid-template-columns:1fr}
+body[data-brand-scope="mixed"] .hero-photo-wrap{display:none}
+
 </style>
 </head>
 <body>
@@ -132,7 +141,7 @@ footer{border-top:1px solid #e4eaf3;padding-top:22px;margin-top:32px}
 </div></header>
 <main>
 <section class="brand-hero" aria-label="FILA Watches warranty registration">
-<div class="hero-copy"><div class="eyebrow">— &nbsp; บริการหลังการขาย</div>
+<div class="hero-copy"><div class="eyebrow" id="hero-eyebrow">— &nbsp; บริการหลังการขาย</div>
 <h1>ลงทะเบียนรับประกัน</h1>
 <p class="intro">เพียงใช้เลขคำสั่งซื้อจาก TikTok Shop เพื่อดูข้อมูลสินค้าและลงทะเบียนรับประกันกับ Westime Thailand</p>
 <div class="steps" aria-label="ขั้นตอนการลงทะเบียน"><div id="step1" class="step active">1 ตรวจสอบคำสั่งซื้อ</div><div id="step2" class="step">2 ยืนยันข้อมูล</div><div id="step3" class="step">3 ลงทะเบียนสำเร็จ</div></div>
@@ -189,6 +198,10 @@ footer{border-top:1px solid #e4eaf3;padding-top:22px;margin-top:32px}
 </div>
 <div>
 <div class="promo"><div class="graphic"><img class="brandmark" src="/assets/fila-watches-logo.webp" alt="FILA Watches" width="100" height="100" loading="lazy"><small>FILA WATCH COLLECTION</small></div><div class="caption"><strong>FILA Watches</strong><small>รับประกันสินค้าและบริการหลังการขายโดย Westime Thailand</small></div></div>
+<section class="brand-scope-note" id="movember-panel" hidden aria-labelledby="movember-heading">
+  <strong id="movember-heading">MOVEMBER</strong>
+  <p>นาฬิกาและสร้อยข้อมือ MOVEMBER ที่จำหน่ายโดย Westime Thailand รับประกัน 1 ปีนับจากวันที่ซื้อ ตามเงื่อนไขการรับประกันของร้าน โดยแยกประเภทสินค้าตาม SKU</p>
+</section>
 <div class="aside"><strong>ดูแลโดย Westime Thailand</strong><h2>รับประกัน 1 ปี</h2><p>นับจากวันที่สั่งซื้อ</p><hr>
 <h3>ความคุ้มครอง</h3><div class="detail-panel">✓ กลไกและการทำงานของนาฬิกา<br>✓ ความผิดพลาดจากการผลิต<br>✓ แบตเตอรี่ ภายใต้เงื่อนไขการรับประกัน</div><hr>
 <h3 class="exclusions">สิ่งที่ไม่ครอบคลุม</h3><div class="detail-panel caution">× กระจกแตก<br>× สายสึกหรอตามการใช้งาน<br>× น้ำเข้าจากการใช้งานไม่ถูกต้อง<br>× ความเสียหายจากอุบัติเหตุ</div></div>
@@ -213,17 +226,34 @@ function showMessage(m,type){el.message.hidden=!m;el.message.textContent=m;el.me
 function setStep(n){for(let i=1;i<=3;i++){byId("step"+i).className="step"+(i===n?" active":"")}}
 function requestUuid(){if(typeof crypto.randomUUID==="function")return crypto.randomUUID();const b=crypto.getRandomValues(new Uint8Array(16));b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;const s=Array.from(b,x=>x.toString(16).padStart(2,"0")).join("");return s.slice(0,8)+"-"+s.slice(8,12)+"-"+s.slice(12,16)+"-"+s.slice(16,20)+"-"+s.slice(20)}
 async function callApi(action,data){const response=await fetch(API,{method:"POST",mode:"cors",cache:"no-store",headers:{"Content-Type":"application/json","Accept":"application/json","apikey":APP_KEY},body:JSON.stringify(Object.assign({action},data))});const result=await response.json().catch(()=>({}));if(!response.ok||result.ok!==true)throw new Error(result.message||"ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่");return result}
-function productTitle(item){return [item.brand||"FILA",item.model||item.productName||"นาฬิกา",item.color||""].filter(Boolean).join(" · ")}
+function productBrand(item){
+ const brand=clean(item.brand).toLowerCase(),sku=clean(item.sku||item.external_sku).toUpperCase();
+ if(brand==="movember"||/^MV-/.test(sku)||["BR-A0005-1","BR-A0005-2","BR-A0005-3","BR-A0036-2"].includes(sku))return "MOVEMBER";
+ if(brand==="fila"||/^38-/.test(sku)||sku==="8-6898-105")return "FILA";
+ return "Westime Thailand";
+}
+function productUnit(item){
+ return /^BR-/.test(clean(item.sku||item.external_sku).toUpperCase())?"ชิ้น":"เรือน";
+}
+function productTitle(item){return [productBrand(item),item.model||item.productName||"สินค้า",item.color||""].filter(Boolean).join(" · ")}
+function updateBrandScope(data){
+ const products=[...(Array.isArray(data.items)?data.items:[]),...(Array.isArray(data.registered)?data.registered:[])];
+ const brands=new Set(products.map(productBrand).filter(x=>x==="FILA"||x==="MOVEMBER"));
+ const scope=brands.size===2?"mixed":brands.has("MOVEMBER")?"movember":"fila";
+ document.body.dataset.brandScope=scope;
+ byId("movember-panel").hidden=scope==="fila";
+ byId("hero-eyebrow").textContent=scope==="movember"?"— MOVEMBER · บริการหลังการขาย":scope==="mixed"?"— FILA & MOVEMBER · บริการหลังการขาย":"— บริการหลังการขาย";
+}
 function makeRegistered(data){
  const arr=Array.isArray(data)?data:[];el.existing.hidden=arr.length===0;el.existingList.replaceChildren();
  for(const item of arr){const div=txt("div","","done-row");div.append(txt("strong",productTitle(item)),txt("div","Warranty ID: "+clean(item.warrantyId),"code"),txt("div",statusName(item.status)+" · หมดประกัน "+dateLabel(item.expiresOn),"subtitle"));el.existingList.append(div)}
 }
 function drawOrder(data){
- order=data;activeRequest=null;setStep(2);el.success.hidden=true;el.success.replaceChildren();el.results.hidden=false;el.summary.replaceChildren();
+ order=data;activeRequest=null;updateBrandScope(data);setStep(2);el.success.hidden=true;el.success.replaceChildren();el.results.hidden=false;el.summary.replaceChildren();
  el.summary.append(txt("div","คำสั่งซื้อ "+clean(data.orderId)),txt("div","วันที่สั่งซื้อ "+dateLabel(data.purchaseDate)));
  makeRegistered(data.registered);el.items.replaceChildren();const items=Array.isArray(data.items)?data.items:[];let available=false;
- items.forEach((item,idx)=>{const remaining=Math.max(0,Math.min(100,Number(item.remaining)||0));const div=txt("div","","item"),info=txt("div");info.append(txt("strong",productTitle(item)),txt("div","SKU "+(item.sku||"—")+" · ซื้อ "+(Number(item.quantity)||0)+" เรือน · ลงทะเบียนได้อีก "+remaining+" เรือน","subtitle"));div.append(info);
-  if(remaining>0){available=true;const field=document.createElement("select");field.dataset.index=String(idx);field.setAttribute("aria-label","จำนวนที่ต้องการลงทะเบียน: "+productTitle(item));for(let i=0;i<=remaining;i++){const opt=new Option(i+" เรือน",String(i),i===1,i===1);field.append(opt)}div.append(field)}else div.append(txt("span","ลงทะเบียนครบแล้ว","subtitle"));el.items.append(div)});
+ items.forEach((item,idx)=>{const remaining=Math.max(0,Math.min(100,Number(item.remaining)||0));const div=txt("div","","item"),info=txt("div");info.append(txt("strong",productTitle(item)),txt("div","SKU "+(item.sku||"—")+" · ซื้อ "+(Number(item.quantity)||0)+" "+productUnit(item)+" · ลงทะเบียนได้อีก "+remaining+" "+productUnit(item),"subtitle"));div.append(info);
+  if(remaining>0){available=true;const field=document.createElement("select");field.dataset.index=String(idx);field.setAttribute("aria-label","จำนวนที่ต้องการลงทะเบียน: "+productTitle(item));for(let i=0;i<=remaining;i++){const opt=new Option(i+" "+productUnit(item),String(i),i===1,i===1);field.append(opt)}div.append(field)}else div.append(txt("span","ลงทะเบียนครบแล้ว","subtitle"));el.items.append(div)});
  el.registerForm.hidden=!available;el.registerForm.reset();
  if(!items.length)showMessage("พบคำสั่งซื้อ แต่ไม่มีรายการสินค้าสำหรับลงทะเบียน กรุณาติดต่อเจ้าหน้าที่","error");
  else if(!available)showMessage("ลงทะเบียนสินค้าครบตามจำนวนที่ซื้อแล้ว สามารถตรวจสอบ Warranty ID ด้านล่างได้","success");
@@ -231,13 +261,13 @@ function drawOrder(data){
 }
 async function lookupOrder(event){
  event.preventDefault();const orderId=clean(el.orderId.value);if(!/^[0-9]{12,30}$/.test(orderId)){showMessage("กรุณากรอก Order ID เป็นตัวเลข 12–30 หลัก","error");return}
- el.lookup.disabled=true;el.results.hidden=true;order=null;setStep(1);showMessage("กำลังตรวจสอบคำสั่งซื้อ...");
+ el.lookup.disabled=true;el.results.hidden=true;order=null;document.body.dataset.brandScope="fila";byId("movember-panel").hidden=true;byId("hero-eyebrow").textContent="— บริการหลังการขาย";setStep(1);showMessage("กำลังตรวจสอบคำสั่งซื้อ...");
  try{const res=await callApi("lookup",{orderId});if(!res.order||typeof res.order!=="object")throw new Error("ข้อมูลคำสั่งซื้อไม่ถูกต้อง");drawOrder(res.order)}catch(e){showMessage(e.message||"ตรวจสอบคำสั่งซื้อไม่สำเร็จ","error")}finally{el.lookup.disabled=false}
 }
 async function registerOrder(event){
  event.preventDefault();if(!order||!el.consent.checked){showMessage("กรุณายอมรับเงื่อนไขการลงทะเบียน","error");return}
  const choices=[];for(const field of el.items.querySelectorAll("select[data-index]")){const item=order.items[Number(field.dataset.index)],quantity=Number(field.value);if(item&&quantity>0&&Number.isInteger(quantity))choices.push({itemId:item.itemId,quantity})}
- if(!choices.length){showMessage("กรุณาเลือกสินค้าอย่างน้อยหนึ่งเรือน","error");return}
+ if(!choices.length){showMessage("กรุณาเลือกสินค้าอย่างน้อยหนึ่งรายการ","error");return}
  const data={orderId:clean(order.orderId),items:choices,customerName:clean(el.name.value),customerPhone:clean(el.phone.value),customerEmail:clean(el.email.value).toLowerCase(),consent:true};
  const fingerprint=JSON.stringify(data);if(!activeRequest||activeRequest.fingerprint!==fingerprint)activeRequest={fingerprint,requestId:requestUuid()};
  el.submit.disabled=true;showMessage("กำลังบันทึกการลงทะเบียน...");

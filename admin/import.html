@@ -52,7 +52,7 @@ footer{text-align:center;color:#8090a1;font-size:12px;margin:30px 0}
 <section class="panel" id="previewPanel" hidden>
 <h2>2. ตรวจสอบรายการก่อนนำเข้า</h2>
 <p id="fileLabel" class="subtext"></p>
-<div class="stats"><div class="stat"><strong id="orderCount">0</strong><small>คำสั่งซื้อ</small></div><div class="stat"><strong id="unitCount">0</strong><small>นาฬิกา</small></div><div class="stat"><strong id="skuCount">0</strong><small>SKU/สี</small></div><div class="stat"><strong id="skipCount">0</strong><small>แถวที่ข้าม</small></div></div>
+<div class="stats"><div class="stat"><strong id="orderCount">0</strong><small>คำสั่งซื้อ</small></div><div class="stat"><strong id="unitCount">0</strong><small>สินค้า</small></div><div class="stat"><strong id="skuCount">0</strong><small>SKU/สี</small></div><div class="stat"><strong id="skipCount">0</strong><small>แถวที่ข้าม</small></div></div>
 <p id="skippedDetails" class="small muted" aria-live="polite"></p>
 <div class="sheet"><table><thead><tr><th>Seller SKU</th><th>รุ่น</th><th>สี</th><th>จำนวน</th></tr></thead><tbody id="itemsBody"></tbody></table></div>
 <p class="hint">การนำเข้าไฟล์เดิมซ้ำจะอัปเดตข้อมูลคำสั่งซื้อและจำนวนสินค้าเดิม ไม่ใช่สร้างรายการใหม่ซ้ำโดยอัตโนมัติ ระบบไม่เพิ่มรายการยกเลิก/คืนสินค้า/คืนเงิน และจะแบ่งบันทึกอัตโนมัติครั้งละไม่เกิน 150 ออเดอร์ กรุณาตรวจสอบยอดก่อนยืนยัน</p>
@@ -444,6 +444,14 @@ function hasCancellationOrReturn(row,map) {
   return Boolean(cancellation||cancellationStatus||cancelledTime||numericNonzero(returned)||numericNonzero(refund));
 }
 
+// Verified Westime brand families. Unknown SKUs are rejected instead of silently labelled FILA.
+const MOVEMBER_BRACELET_SKUS=new Set(["BR-A0005-1","BR-A0005-2","BR-A0005-3","BR-A0036-2"]);
+function resolveProductBrand(rawSku) {
+  const sku=clean(rawSku).toUpperCase();
+  if(MOVEMBER_BRACELET_SKUS.has(sku)||/^MV-[A-Z0-9]+(?:-[A-Z0-9]+)+$/.test(sku))return "Movember";
+  if(/^38-[A-Z0-9]+(?:-[A-Z0-9]+)+$/.test(sku)||sku==="8-6898-105")return "FILA";
+  throw new Error("SKU ยังไม่กำหนดแบรนด์: "+sku+" — กรุณาแจ้งผู้ดูแลเพื่อเพิ่มในทะเบียนสินค้า ก่อนนำเข้า CSV");
+}
 function addItem(order, source) {
   const key = source.external_sku + "\u241f" + source.color;
   let item = order.itemsByKey.get(key);
@@ -530,7 +538,7 @@ function parseProductionCsv(text) {
       model: WestimeCsvCore.inferModel(sku),
       color: color,
       product_name: readCell(row, map, "Product Name"),
-      brand: /movember/i.test(sku+" "+readCell(row, map, "Product Name")) ? "Movember" : "FILA",
+      brand: resolveProductBrand(sku),
       quantity: quantity
     });
   });
@@ -626,7 +634,7 @@ async function processFile(){
    note("พบรายการที่เคยบันทึกแล้ว "+completedChunks+" ชุด สามารถกดยืนยันเพื่อนำเข้าชุดที่เหลือได้");
  }else{
    if(checkpoint?.chunks>0)note("ไฟล์นี้ต่างจากการนำเข้าที่ค้างไว้ก่อนหน้า โปรดตรวจสอบก่อนเริ่มไฟล์ใหม่");
-   else note("ตรวจสอบจำนวนออเดอร์และรุ่นสินค้าให้ครบ ก่อนกดยืนยันบันทึก");
+   else note("ตรวจสอบจำนวนออเดอร์ แบรนด์ รุ่น SKU และสีสินค้าให้ครบ ก่อนกดยืนยันบันทึก");
    checkpointClear();
  }
  showJob();
@@ -662,7 +670,7 @@ async function save(){
    await new Promise(resolve=>setTimeout(resolve,0));
  }
  saved=true;$("previewPanel").hidden=true;$("successPanel").hidden=false;
- $("successSummary").textContent="บันทึก/อัปเดต "+importTotals.orders+" คำสั่งซื้อ · "+importTotals.items+" รายการสินค้า · "+importTotals.units+" เรือน (ทั้งหมด "+totalChunks+" ชุด)";
+ $("successSummary").textContent="บันทึก/อัปเดต "+importTotals.orders+" คำสั่งซื้อ · "+importTotals.items+" รายการสินค้า · "+importTotals.units+" ชิ้น (ทั้งหมด "+totalChunks+" ชุด)";
  checkpointClear();
  note("บันทึกข้อมูลย้อนหลัง/ปัจจุบันสำเร็จ ไม่ได้สร้าง Warranty QR","ok");
  }catch(e){
